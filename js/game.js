@@ -85,6 +85,15 @@ const Game = (() => {
 
     renderGrid();
     positionHero(false);
+
+    // Auto-collect star at starting position
+    const startTile = state.grid[state.heroY][state.heroX];
+    if (startTile === '*') {
+      state.stars.push([state.heroX, state.heroY]);
+      state.collected++;
+      updateCell(state.heroX, state.heroY);
+    }
+
     return true;
   }
 

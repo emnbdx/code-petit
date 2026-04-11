@@ -47,7 +47,7 @@ const LEVELS = [
   // 1-6
   { grid: ['.','.','.','G'], hero: [0,0,2], tools: ['forward'], optimal: 3, type: 'normal' },
   // 1-7
-  { grid: ['G..','...','...'], hero: [2,2,3], tools: ['forward'], optimal: 2, type: 'normal' },
+  { grid: ['G..','...','...'], hero: [2,0,3], tools: ['forward'], optimal: 2, type: 'normal' },
   // 1-8
   { grid: ['....G'], hero: [0,0,1], tools: ['forward'], optimal: 4, type: 'normal' },
   // 1-9
@@ -55,13 +55,13 @@ const LEVELS = [
   // 1-10
   { grid: ['.....G'], hero: [0,0,1], tools: ['forward'], optimal: 5, type: 'normal' },
   // 1-11
-  { grid: ['..','..','G.'], hero: [1,0,2], tools: ['forward'], optimal: 2, type: 'normal' },
+  { grid: ['.','.','G'], hero: [0,0,2], tools: ['forward'], optimal: 2, type: 'normal' },
   // 1-12
-  { grid: ['...','...','G..'], hero: [2,0,2], tools: ['forward'], optimal: 2, type: 'normal' },
+  { grid: ['.','.','.','G'], hero: [0,0,2], tools: ['forward'], optimal: 3, type: 'normal' },
   // 1-13
   { grid: ['G.....'], hero: [5,0,3], tools: ['forward'], optimal: 5, type: 'normal' },
   // 1-14
-  { grid: ['..','..','.G'], hero: [0,0,2], tools: ['forward'], optimal: 2, type: 'normal' },
+  { grid: ['.','.','G'], hero: [0,0,2], tools: ['forward'], optimal: 2, type: 'normal' },
   // 1-15
   { grid: ['.*G'], hero: [0,0,1], tools: ['forward'], optimal: 2, hint: 'Ramasse les etoiles !', type: 'collect' },
   // 1-16
@@ -99,11 +99,11 @@ const LEVELS = [
   // 2-10
   { grid: ['...*..G'], hero: [0,0,1], tools: ['forward'], optimal: 6, type: 'collect' },
   // 2-11
-  { grid: ['G','.','.','*','.','.','*'], hero: [0,6,0], tools: ['forward'], optimal: 6, type: 'collect' },
+  { grid: ['G','*','.','.','*','.','.'], hero: [0,6,0], tools: ['forward'], optimal: 6, type: 'collect' },
   // 2-12
-  { grid: ['*.*.*G.'], hero: [0,0,1], tools: ['forward'], optimal: 5, type: 'collect' },
+  { grid: ['..*.*.G'], hero: [0,0,1], tools: ['forward'], optimal: 6, type: 'collect' },
   // 2-13
-  { grid: ['..*','...','.*.','...','G..'], hero: [2,0,2], tools: ['forward'], optimal: 4, type: 'collect' },
+  { grid: ['.','.','*','.','G'], hero: [0,0,2], tools: ['forward'], optimal: 4, type: 'collect' },
   // 2-14
   { grid: ['.*.*.*..G'], hero: [0,0,1], tools: ['forward'], optimal: 8, type: 'collect' },
   // 2-15
@@ -113,11 +113,11 @@ const LEVELS = [
   // 2-17
   { grid: ['.......G'], hero: [0,0,1], tools: ['forward'], optimal: 7, type: 'normal' },
   // 2-18
-  { grid: ['*.*.*.*G'], hero: [0,0,1], tools: ['forward'], optimal: 7, type: 'collect' },
+  { grid: ['.*.*.*.*G'], hero: [0,0,1], tools: ['forward'], optimal: 8, type: 'collect' },
   // 2-19
-  { grid: ['G','*','*','.','*','*','.','*'], hero: [0,7,0], tools: ['forward'], optimal: 7, type: 'challenge' },
+  { grid: ['G','*','*','.','*','*','.','.'], hero: [0,7,0], tools: ['forward'], optimal: 7, type: 'challenge' },
   // 2-20
-  { grid: ['*.*.*.*.*G'], hero: [0,0,1], tools: ['forward'], optimal: 9, type: 'challenge' },
+  { grid: ['.*.*.*.*.*G'], hero: [0,0,1], tools: ['forward'], optimal: 10, type: 'challenge' },
 
   // =============================================
   // WORLD 3 - LA PLAGE (turning)
