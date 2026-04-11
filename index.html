@@ -41,7 +41,23 @@
       <button class="btn btn-secondary" id="btn-continue" style="display:none;">
         Continuer
       </button>
+      <button class="btn btn-reset-progress" id="btn-reset-progress" style="display:none;">
+        Tout recommencer
+      </button>
     </div>
+
+  <!-- RESET CONFIRM MODAL -->
+  <div id="modal-reset" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div class="fail-icon">&#9888;</div>
+      <h2 class="fail-title" style="color:var(--text);">Tout recommencer ?</h2>
+      <p class="fail-msg">Toute ta progression sera effacee. Es-tu sur ?</p>
+      <div class="victory-buttons">
+        <button class="btn btn-secondary" id="btn-reset-cancel">Non</button>
+        <button class="btn btn-play" id="btn-reset-confirm" style="background:#e53e3e;box-shadow:0 4px 0 #c53030;">Oui</button>
+      </div>
+    </div>
+  </div>
   </div>
 
   <!-- WORLD SELECT SCREEN -->

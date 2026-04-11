@@ -160,6 +160,18 @@ html, body {
   margin-bottom: 20px;
 }
 
+/* Reset progress button */
+.btn-reset-progress {
+  background: none;
+  border: none;
+  color: var(--text-light);
+  font-size: 13px;
+  padding: 8px 16px;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-top: 8px;
+}
+
 /* ---- Screen Header ---- */
 .screen-header {
   display: flex;

@@ -70,13 +70,32 @@ const App = (() => {
       Game.resetLevel();
     });
 
-    // Show continue button if there's progress
-    if (save.lastWorld > 1 || save.lastLevel > 1) {
-      document.getElementById('btn-continue').style.display = '';
-    }
+    // Reset progress
+    document.getElementById('btn-reset-progress').addEventListener('click', () => {
+      showModal('modal-reset');
+    });
+    document.getElementById('btn-reset-cancel').addEventListener('click', () => {
+      hideModal('modal-reset');
+    });
+    document.getElementById('btn-reset-confirm').addEventListener('click', () => {
+      hideModal('modal-reset');
+      resetSave();
+      document.getElementById('btn-continue').style.display = 'none';
+      document.getElementById('btn-reset-progress').style.display = 'none';
+    });
+
+    // Show continue / reset buttons if there's progress
+    updateHomeButtons();
 
     // Show home
     showScreen('home');
+  }
+
+  function updateHomeButtons() {
+    const hasProgress = save.lastWorld > 1 || save.lastLevel > 1 ||
+      Object.keys(save.stars).length > 0;
+    document.getElementById('btn-continue').style.display = hasProgress ? '' : 'none';
+    document.getElementById('btn-reset-progress').style.display = hasProgress ? '' : 'none';
   }
 
   function showScreen(name) {
@@ -85,6 +104,7 @@ const App = (() => {
 
     if (name === 'worlds') buildWorldsScreen();
     if (name === 'levels') showLevels(currentWorld);
+    if (name === 'home') updateHomeButtons();
   }
 
   function setWorldTheme(worldId) {
