@@ -53,6 +53,10 @@ const Game = (() => {
     // Generate sprite sheet and set as hero background
     const sheetUrl = Sprites.generate();
     heroEl.style.backgroundImage = `url(${sheetUrl})`;
+
+    // Generate goal (treasure chest) sprite and expose via CSS var
+    const goalUrl = Sprites.generateGoal();
+    document.documentElement.style.setProperty('--goal-sprite', `url(${goalUrl})`);
   }
 
   function loadLevel(worldId, levelNum) {
