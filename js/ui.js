@@ -28,8 +28,8 @@ const UI = (() => {
   // Instruction definitions
   const INSTRUCTIONS = {
     forward: { icon: '\u2B06', label: 'Avancer', css: 'forward' },
-    left:    { icon: '\u21A9', label: 'Gauche', css: 'turn_left' },
-    right:   { icon: '\u21AA', label: 'Droite', css: 'turn_right' },
+    left:    { icon: '\u21BA', label: 'Gauche', css: 'turn_left' },
+    right:   { icon: '\u21BB', label: 'Droite', css: 'turn_right' },
     loop:    { icon: '\u{1F504}', label: 'Boucle', css: 'loop' },
     f1:      { icon: 'F1', label: 'F1', css: 'call-f1' },
     f2:      { icon: 'F2', label: 'F2', css: 'call-f2' },

@@ -32,7 +32,6 @@ const Game = (() => {
   const DX = [0, 1, 0, -1];
   const DY = [-1, 0, 1, 0];
   const DIR_NAMES = ['up', 'right', 'down', 'left'];
-  const DIR_ANGLES = [0, 90, 180, 270];
 
   // DOM refs
   let gridContainer, heroEl, gameArea;
@@ -41,6 +40,7 @@ const Game = (() => {
   let animTimeout = null;
   let onComplete = null;
   let onStep = null;
+  let walkFrame = 0; // 0,1,2 for idle, walk_a, walk_b
 
   // Grid cell references
   let cellEls = [];
@@ -49,6 +49,10 @@ const Game = (() => {
     gridContainer = document.getElementById('grid-container');
     heroEl = document.getElementById('hero');
     gameArea = document.getElementById('game-area');
+
+    // Generate sprite sheet and set as hero background
+    const sheetUrl = Sprites.generate();
+    heroEl.style.backgroundImage = `url(${sheetUrl})`;
   }
 
   function loadLevel(worldId, levelNum) {
@@ -76,6 +80,7 @@ const Game = (() => {
     state.grid = level.grid.map(row => row.split(''));
 
     // Count stars
+    walkFrame = 0;
     state.totalStars = 0;
     for (let y = 0; y < state.gridRows; y++) {
       for (let x = 0; x < state.gridCols; x++) {
@@ -154,6 +159,18 @@ const Game = (() => {
     }
   }
 
+  function setSpriteFrame(frame, dir) {
+    if (!heroEl) return;
+    const cellSize = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cell-size'));
+    // Sprite sheet: 3 columns (frames), 4 rows (directions)
+    // frame: 0=idle, 1=walk_a, 2=walk_b
+    // dir: game direction (0=up,1=right,2=down,3=left) -> sprite row via DIR_TO_ROW
+    const row = Sprites.DIR_TO_ROW[dir];
+    const px = -(frame * cellSize);
+    const py = -(row * cellSize);
+    heroEl.style.backgroundPosition = `${px}px ${py}px`;
+  }
+
   function positionHero(animate) {
     if (!heroEl || !gridContainer) return;
 
@@ -175,12 +192,14 @@ const Game = (() => {
     } else {
       const speed = state.speed;
       const dur = speed === 3 ? 0.12 : speed === 2 ? 0.2 : 0.35;
-      heroEl.style.transition = `left ${dur}s ease, top ${dur}s ease, transform 0.15s ease`;
+      heroEl.style.transition = `left ${dur}s ease, top ${dur}s ease`;
     }
 
     heroEl.style.left = offsetX + 'px';
     heroEl.style.top = offsetY + 'px';
-    heroEl.style.transform = `rotate(${DIR_ANGLES[state.heroDir]}deg)`;
+
+    // Set sprite direction and frame
+    setSpriteFrame(animate ? walkFrame : 0, state.heroDir);
 
     if (!animate) {
       // Force reflow then re-enable transitions
@@ -207,6 +226,7 @@ const Game = (() => {
     state.actionCount = 0;
 
     // Re-render grid to reset visual states
+    walkFrame = 0;
     renderGrid();
     positionHero(false);
   }
@@ -239,6 +259,8 @@ const Game = (() => {
 
     state.heroX = nx;
     state.heroY = ny;
+    // Cycle walk frame between 1 and 2 for animation
+    walkFrame = (walkFrame === 1) ? 2 : 1;
     positionHero(true);
     Sounds.step();
 

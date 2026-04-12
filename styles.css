@@ -436,20 +436,23 @@ html, body {
   border: 2px dashed #c6f6d5;
 }
 
-/* Hero Bird */
+/* Hero Sprite */
 .hero {
   position: absolute;
   width: var(--cell-size);
   height: var(--cell-size);
-  transition: left 0.3s ease, top 0.3s ease, transform 0.2s ease;
+  transition: left 0.3s ease, top 0.3s ease;
   z-index: 5;
   pointer-events: none;
-}
-.hero-bird {
-  width: 100%;
-  height: 100%;
-  display: block;
-  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  background-repeat: no-repeat;
+  /* sprite sheet: 3 cols x 4 rows, each 24x24 */
+  background-size: calc(var(--cell-size) * 3) calc(var(--cell-size) * 4);
+  /* default: idle frame, row 0 (down) */
+  background-position: 0 0;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25));
 }
 .hero.bump {
   animation: bump 0.3s ease;
@@ -457,6 +460,14 @@ html, body {
 @keyframes bump {
   0%, 100% { transform: translate(0, 0); }
   50% { transform: translate(var(--bump-x, 0), var(--bump-y, 0)); }
+}
+/* Idle bob animation */
+.hero.idle {
+  animation: idle-bob 0.6s ease-in-out infinite;
+}
+@keyframes idle-bob {
+  0%, 100% { background-position-x: 0; }
+  50% { background-position-x: calc(var(--cell-size) * -1); }
 }
 
 /* Game hint */
@@ -528,8 +539,8 @@ html, body {
   100% { box-shadow: 0 0 0 0px var(--world-color); }
 }
 .program-block.forward { background: #bee3f8; color: #2b6cb0; }
-.program-block.turn_left { background: #feebc8; color: #c05621; }
-.program-block.turn_right { background: #feebc8; color: #c05621; }
+.program-block.turn_left { background: #feebc8; color: #c05621; font-size: 24px; font-weight: 900; }
+.program-block.turn_right { background: #feebc8; color: #c05621; font-size: 24px; font-weight: 900; }
 .program-block.loop-start { background: #c6f6d5; color: #276749; border-radius: 6px 2px 2px 6px; }
 .program-block.loop-end { background: #c6f6d5; color: #276749; border-radius: 2px 6px 6px 2px; min-width: 20px; font-size: 14px; }
 .program-block.loop-body { border-top: 3px solid #68d391; border-bottom: 3px solid #68d391; }
@@ -655,8 +666,8 @@ html, body {
   box-shadow: 0 1px 0 rgba(0,0,0,0.15);
 }
 .palette-btn.forward { background: #bee3f8; color: #2b6cb0; }
-.palette-btn.turn_left { background: #feebc8; color: #c05621; }
-.palette-btn.turn_right { background: #feebc8; color: #c05621; }
+.palette-btn.turn_left { background: #feebc8; color: #c05621; font-size: 30px; font-weight: 900; }
+.palette-btn.turn_right { background: #feebc8; color: #c05621; font-size: 30px; font-weight: 900; }
 .palette-btn.loop { background: #c6f6d5; color: #276749; }
 .palette-btn.call-f1 { background: #e9d8fd; color: #6b46c1; }
 .palette-btn.call-f2 { background: #fed7e2; color: #b83280; }
