@@ -40,7 +40,6 @@ const Game = (() => {
   let animTimeout = null;
   let onComplete = null;
   let onStep = null;
-  let walkFrame = 0; // 0,1,2 for idle, walk_a, walk_b
 
   // Grid cell references
   let cellEls = [];
@@ -50,13 +49,11 @@ const Game = (() => {
     heroEl = document.getElementById('hero');
     gameArea = document.getElementById('game-area');
 
-    // Generate sprite sheet and set as hero background
-    const sheetUrl = Sprites.generate();
-    heroEl.style.backgroundImage = `url(${sheetUrl})`;
+    // Inject the 4 direction SVGs into the hero container
+    Sprites.initHero(heroEl);
 
-    // Generate goal (treasure chest) sprite and expose via CSS var
-    const goalUrl = Sprites.generateGoal();
-    document.documentElement.style.setProperty('--goal-sprite', `url(${goalUrl})`);
+    // Expose goal (treasure chest) SVG via CSS variable
+    document.documentElement.style.setProperty('--goal-sprite', `url("${Sprites.getGoalUrl()}")`);
   }
 
   function loadLevel(worldId, levelNum) {
@@ -84,7 +81,6 @@ const Game = (() => {
     state.grid = level.grid.map(row => row.split(''));
 
     // Count stars
-    walkFrame = 0;
     state.totalStars = 0;
     for (let y = 0; y < state.gridRows; y++) {
       for (let x = 0; x < state.gridCols; x++) {
@@ -119,6 +115,7 @@ const Game = (() => {
 
     gridContainer.style.gridTemplateColumns = `repeat(${state.gridCols}, var(--cell-size))`;
     gridContainer.style.gridTemplateRows = `repeat(${state.gridRows}, var(--cell-size))`;
+    gridContainer.dataset.world = state.worldId;
 
     gridContainer.innerHTML = '';
     cellEls = [];
@@ -163,18 +160,6 @@ const Game = (() => {
     }
   }
 
-  function setSpriteFrame(frame, dir) {
-    if (!heroEl) return;
-    const cellSize = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cell-size'));
-    // Sprite sheet: 3 columns (frames), 4 rows (directions)
-    // frame: 0=idle, 1=walk_a, 2=walk_b
-    // dir: game direction (0=up,1=right,2=down,3=left) -> sprite row via DIR_TO_ROW
-    const row = Sprites.DIR_TO_ROW[dir];
-    const px = -(frame * cellSize);
-    const py = -(row * cellSize);
-    heroEl.style.backgroundPosition = `${px}px ${py}px`;
-  }
-
   function positionHero(animate) {
     if (!heroEl || !gridContainer) return;
 
@@ -202,8 +187,8 @@ const Game = (() => {
     heroEl.style.left = offsetX + 'px';
     heroEl.style.top = offsetY + 'px';
 
-    // Set sprite direction and frame
-    setSpriteFrame(animate ? walkFrame : 0, state.heroDir);
+    // Set direction - CSS shows only the matching SVG
+    heroEl.dataset.dir = state.heroDir;
 
     if (!animate) {
       // Force reflow then re-enable transitions
@@ -230,7 +215,7 @@ const Game = (() => {
     state.actionCount = 0;
 
     // Re-render grid to reset visual states
-    walkFrame = 0;
+    heroEl.classList.remove('walking');
     renderGrid();
     positionHero(false);
   }
@@ -263,8 +248,6 @@ const Game = (() => {
 
     state.heroX = nx;
     state.heroY = ny;
-    // Cycle walk frame between 1 and 2 for animation
-    walkFrame = (walkFrame === 1) ? 2 : 1;
     positionHero(true);
     Sounds.step();
 
@@ -382,6 +365,7 @@ const Game = (() => {
 
     state.running = true;
     state.stepIndex = 0;
+    heroEl.classList.add('walking');
     state.actionCount = mainProg.length + (f1Prog ? f1Prog.length : 0) + (f2Prog ? f2Prog.length : 0);
 
     // Count actual instruction blocks placed (for star rating)
@@ -406,6 +390,7 @@ const Game = (() => {
       if (idx >= steps.length) {
         // Program finished - check if won
         state.running = false;
+        heroEl.classList.remove('walking');
         if (checkWin()) {
           state.goalReached = true;
           const starsEarned = getStarsEarned(state.actionCount);
@@ -445,6 +430,7 @@ const Game = (() => {
       // Check win after each step
       if (checkWin()) {
         state.running = false;
+        heroEl.classList.remove('walking');
         state.goalReached = true;
         const starsEarned = getStarsEarned(state.actionCount);
         setTimeout(() => {
@@ -478,6 +464,7 @@ const Game = (() => {
 
   function stop() {
     state.running = false;
+    if (heroEl) heroEl.classList.remove('walking');
     if (animTimeout) {
       clearTimeout(animTimeout);
       animTimeout = null;

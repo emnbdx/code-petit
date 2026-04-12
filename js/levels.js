@@ -41,7 +41,7 @@ const LEVELS = [
   // 1-3
   { grid: ['...G'], hero: [0,0,1], tools: ['forward'], optimal: 3, hint: 'Avance encore !', type: 'guided' },
   // 1-4
-  { grid: ['G','.','.'], hero: [0,2,0], tools: ['forward'], optimal: 2, hint: 'Le robot monte', type: 'normal' },
+  { grid: ['G','.','.'], hero: [0,2,0], tools: ['forward'], optimal: 2, hint: 'Ton heros monte', type: 'normal' },
   // 1-5
   { grid: ['G','.','.','.'], hero: [0,3,0], tools: ['forward'], optimal: 3, type: 'normal' },
   // 1-6

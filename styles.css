@@ -382,6 +382,138 @@ html, body {
   box-shadow: inset 0 -3px 0 #718096;
   border-radius: 4px;
 }
+
+/* ============================================
+   World-themed path & wall cells
+   ============================================ */
+
+/* World 1 - La Prairie (grass) */
+.grid-container[data-world="1"] .grid-cell.path,
+.grid-container[data-world="1"] .grid-cell.goal,
+.grid-container[data-world="1"] .grid-cell.star {
+  background:
+    radial-gradient(circle at 30% 30%, #9ae6b4 0 2px, transparent 3px),
+    radial-gradient(circle at 70% 60%, #9ae6b4 0 2px, transparent 3px),
+    linear-gradient(135deg, #d8f5c4 0%, #b4e89a 100%);
+}
+.grid-container[data-world="1"] .grid-cell.wall {
+  background:
+    radial-gradient(circle at 50% 40%, #48bb78 0 6px, transparent 7px),
+    linear-gradient(135deg, #2f855a 0%, #276749 100%);
+  box-shadow: inset 0 -3px 0 #22543d;
+}
+
+/* World 2 - La Foret (forest floor + trees) */
+.grid-container[data-world="2"] .grid-cell.path,
+.grid-container[data-world="2"] .grid-cell.goal,
+.grid-container[data-world="2"] .grid-cell.star {
+  background:
+    radial-gradient(circle at 25% 25%, rgba(120, 80, 40, 0.25) 0 2px, transparent 3px),
+    radial-gradient(circle at 75% 75%, rgba(120, 80, 40, 0.25) 0 1.5px, transparent 2.5px),
+    linear-gradient(135deg, #c6f0d4 0%, #8fd6a3 100%);
+}
+.grid-container[data-world="2"] .grid-cell.wall {
+  background:
+    radial-gradient(ellipse at 50% 35%, #276749 0 40%, #1c4532 41%, #1c4532 100%);
+  box-shadow: inset 0 -3px 0 #14331f;
+}
+
+/* World 3 - La Plage (sand + water) */
+.grid-container[data-world="3"] .grid-cell.path,
+.grid-container[data-world="3"] .grid-cell.goal,
+.grid-container[data-world="3"] .grid-cell.star {
+  background:
+    radial-gradient(circle at 20% 30%, #f6e05e 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 60% 70%, #f6e05e 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 80% 20%, #ecc94b 0 1px, transparent 2px),
+    linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+}
+.grid-container[data-world="3"] .grid-cell.wall {
+  background:
+    linear-gradient(180deg, #4fd1c5 0%, #319795 50%, #2c7a7b 100%);
+  box-shadow: inset 0 -3px 0 #234e52, inset 0 3px 0 rgba(255,255,255,0.35);
+}
+
+/* World 4 - La Montagne (rock + snow) */
+.grid-container[data-world="4"] .grid-cell.path,
+.grid-container[data-world="4"] .grid-cell.goal,
+.grid-container[data-world="4"] .grid-cell.star {
+  background:
+    radial-gradient(circle at 40% 40%, rgba(160, 174, 192, 0.4) 0 2px, transparent 3px),
+    linear-gradient(135deg, #f7fafc 0%, #e2e8f0 100%);
+}
+.grid-container[data-world="4"] .grid-cell.wall {
+  background:
+    linear-gradient(135deg, #718096 0%, #4a5568 60%, #2d3748 100%);
+  box-shadow: inset 0 -3px 0 #1a202c, inset 0 4px 0 rgba(255,255,255,0.2);
+}
+
+/* World 5 - Le Desert (dunes) */
+.grid-container[data-world="5"] .grid-cell.path,
+.grid-container[data-world="5"] .grid-cell.goal,
+.grid-container[data-world="5"] .grid-cell.star {
+  background:
+    radial-gradient(circle at 30% 40%, #ecc94b 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 70% 60%, #ecc94b 0 1px, transparent 2px),
+    linear-gradient(135deg, #fef9c3 0%, #fde68a 50%, #f6ad55 100%);
+}
+.grid-container[data-world="5"] .grid-cell.wall {
+  background:
+    linear-gradient(135deg, #b7791f 0%, #975a16 60%, #744210 100%);
+  box-shadow: inset 0 -3px 0 #4a2509;
+}
+
+/* World 6 - L'Ocean (water) */
+.grid-container[data-world="6"] .grid-cell.path,
+.grid-container[data-world="6"] .grid-cell.goal,
+.grid-container[data-world="6"] .grid-cell.star {
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(255,255,255,0.5) 0 30%, transparent 35%),
+    linear-gradient(135deg, #bee3f8 0%, #90cdf4 50%, #4fd1c5 100%);
+  animation: ocean-shimmer 4s ease-in-out infinite;
+}
+@keyframes ocean-shimmer {
+  0%, 100% { filter: brightness(1); }
+  50%      { filter: brightness(1.06); }
+}
+.grid-container[data-world="6"] .grid-cell.wall {
+  background:
+    radial-gradient(circle at 50% 40%, #2b6cb0 0 30%, #1a365d 31%, #1a365d 100%);
+  box-shadow: inset 0 -3px 0 #12285a;
+}
+
+/* World 7 - L'Espace (stars + dark) */
+.grid-container[data-world="7"] .grid-cell.path,
+.grid-container[data-world="7"] .grid-cell.goal,
+.grid-container[data-world="7"] .grid-cell.star {
+  background:
+    radial-gradient(circle at 20% 30%, #fff 0 1px, transparent 2px),
+    radial-gradient(circle at 80% 60%, #fff 0 1px, transparent 2px),
+    radial-gradient(circle at 60% 20%, rgba(255,255,255,0.7) 0 0.8px, transparent 1.8px),
+    linear-gradient(135deg, #2d3748 0%, #1a202c 50%, #2a1a4e 100%);
+}
+.grid-container[data-world="7"] .grid-cell.wall {
+  background:
+    radial-gradient(circle at 35% 30%, #b794f4 0 30%, #6b46c1 31%, #44337a 100%);
+  box-shadow: inset 0 -3px 0 #322659, inset 0 2px 0 rgba(255,255,255,0.2);
+}
+
+/* World 8 - Le Chateau (stone floor) */
+.grid-container[data-world="8"] .grid-cell.path,
+.grid-container[data-world="8"] .grid-cell.goal,
+.grid-container[data-world="8"] .grid-cell.star {
+  background:
+    linear-gradient(90deg, transparent 48%, rgba(0,0,0,0.08) 49%, rgba(0,0,0,0.08) 51%, transparent 52%),
+    linear-gradient(0deg, transparent 48%, rgba(0,0,0,0.08) 49%, rgba(0,0,0,0.08) 51%, transparent 52%),
+    linear-gradient(135deg, #fbd38d 0%, #f6ad55 100%);
+}
+.grid-container[data-world="8"] .grid-cell.wall {
+  background:
+    linear-gradient(0deg,  transparent 48%, rgba(0,0,0,0.3) 49%, rgba(0,0,0,0.3) 51%, transparent 52%),
+    linear-gradient(90deg, transparent 48%, rgba(0,0,0,0.3) 49%, rgba(0,0,0,0.3) 51%, transparent 52%),
+    linear-gradient(135deg, #a0aec0 0%, #718096 60%, #4a5568 100%);
+  box-shadow: inset 0 -3px 0 #2d3748;
+}
 .grid-cell.goal {
   background: var(--white);
   position: relative;
@@ -389,20 +521,18 @@ html, body {
 .grid-cell.goal::after {
   content: '';
   position: absolute;
-  inset: 2px;
+  inset: 3px;
   background-image: var(--goal-sprite);
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
-  image-rendering: pixelated;
-  image-rendering: -moz-crisp-edges;
-  image-rendering: crisp-edges;
-  animation: chest-bob 1.6s ease-in-out infinite;
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+  animation: chest-bob 1.8s ease-in-out infinite;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25));
+  transform-origin: center bottom;
 }
 @keyframes chest-bob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-2px); }
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-2px) scale(1.03); }
 }
 .grid-cell.star {
   background: var(--white);
@@ -447,7 +577,7 @@ html, body {
   border: 2px dashed #c6f6d5;
 }
 
-/* Hero Sprite */
+/* Hero (smooth SVG) */
 .hero {
   position: absolute;
   width: var(--cell-size);
@@ -455,30 +585,119 @@ html, body {
   transition: left 0.3s ease, top 0.3s ease;
   z-index: 5;
   pointer-events: none;
-  image-rendering: pixelated;
-  image-rendering: -moz-crisp-edges;
-  image-rendering: crisp-edges;
-  background-repeat: no-repeat;
-  /* sprite sheet: 3 cols x 4 rows, each 24x24 */
-  background-size: calc(var(--cell-size) * 3) calc(var(--cell-size) * 4);
-  /* default: idle frame, row 0 (down) */
-  background-position: 0 0;
-  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25));
+  filter: drop-shadow(0 3px 3px rgba(0,0,0,0.22));
 }
+.hero .hero-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  overflow: visible;
+}
+/* Show the SVG matching the current direction */
+.hero[data-dir="0"] .hero-svg[data-dir-svg="0"],
+.hero[data-dir="1"] .hero-svg[data-dir-svg="1"],
+.hero[data-dir="2"] .hero-svg[data-dir-svg="2"],
+.hero[data-dir="3"] .hero-svg[data-dir-svg="3"] {
+  display: block;
+}
+
+/* ---- Idle animations (always running) ---- */
+.hero .hero-body {
+  transform-origin: 24px 28px;
+  animation: breathe 2.6s ease-in-out infinite;
+}
+.hero .hero-eyes {
+  transform-origin: 24px 22px;
+  animation: blink 4s ease-in-out infinite;
+}
+.hero .hero-crest {
+  transform-origin: 24px 11px;
+  animation: crest-sway 3.2s ease-in-out infinite;
+}
+.hero .hero-wing-l {
+  transform-origin: 10px 26px;
+  animation: wing-idle-l 2.6s ease-in-out infinite;
+}
+.hero .hero-wing-r {
+  transform-origin: 38px 26px;
+  animation: wing-idle-r 2.6s ease-in-out infinite;
+}
+.hero .hero-tail {
+  transform-origin: 24px 25px;
+  animation: tail-wag 2s ease-in-out infinite;
+}
+.hero .hero-shadow {
+  transform-origin: 24px 43px;
+  animation: shadow-pulse 2.6s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scaleY(1) translateY(0); }
+  50%      { transform: scaleY(1.04) translateY(-0.6px); }
+}
+@keyframes blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95%           { transform: scaleY(0.1); }
+}
+@keyframes crest-sway {
+  0%, 100% { transform: rotate(-3deg); }
+  50%      { transform: rotate(3deg); }
+}
+@keyframes wing-idle-l {
+  0%, 100% { transform: rotate(-12deg) scale(1); }
+  50%      { transform: rotate(-18deg) scale(1.02); }
+}
+@keyframes wing-idle-r {
+  0%, 100% { transform: rotate(12deg) scale(1); }
+  50%      { transform: rotate(18deg) scale(1.02); }
+}
+@keyframes tail-wag {
+  0%, 100% { transform: rotate(-4deg); }
+  50%      { transform: rotate(4deg); }
+}
+@keyframes shadow-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(0.92); opacity: 0.85; }
+}
+
+/* ---- Walking animations (while program executes) ---- */
+.hero.walking .hero-main {
+  animation: walk-bounce 0.35s ease-in-out infinite;
+}
+.hero.walking .hero-wing-l {
+  animation: wing-walk-l 0.25s ease-in-out infinite;
+}
+.hero.walking .hero-wing-r {
+  animation: wing-walk-r 0.25s ease-in-out infinite;
+}
+.hero.walking .hero-feet line {
+  animation: feet-walk 0.25s ease-in-out infinite;
+}
+@keyframes walk-bounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-2.5px); }
+}
+@keyframes wing-walk-l {
+  0%, 100% { transform: rotate(-10deg) scaleY(1); }
+  50%      { transform: rotate(-26deg) scaleY(0.75); }
+}
+@keyframes wing-walk-r {
+  0%, 100% { transform: rotate(10deg) scaleY(1); }
+  50%      { transform: rotate(26deg) scaleY(0.75); }
+}
+@keyframes feet-walk {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-1px); }
+}
+
 .hero.bump {
   animation: bump 0.3s ease;
 }
 @keyframes bump {
   0%, 100% { transform: translate(0, 0); }
   50% { transform: translate(var(--bump-x, 0), var(--bump-y, 0)); }
-}
-/* Idle bob animation */
-.hero.idle {
-  animation: idle-bob 0.6s ease-in-out infinite;
-}
-@keyframes idle-bob {
-  0%, 100% { background-position-x: 0; }
-  50% { background-position-x: calc(var(--cell-size) * -1); }
 }
 
 /* Game hint */

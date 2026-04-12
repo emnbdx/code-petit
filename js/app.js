@@ -284,7 +284,7 @@ const App = (() => {
   }
 
   function onLevelFail(reason) {
-    let msg = 'Le robot n\'a pas atteint l\'objectif.';
+    let msg = 'Ton heros n\'a pas atteint le tresor.';
     if (reason === 'empty') {
       msg = 'Ajoute des instructions avant de lancer !';
     } else if (reason === 'not_at_goal') {

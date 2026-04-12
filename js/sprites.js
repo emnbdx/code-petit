@@ -1,355 +1,146 @@
 /* ============================================
-   CodePetit - Sprite Generator
-   Pixel-art bird with 4 directions + walk anim
-   SNES style (24x24 sprites, pixelated render)
+   CodePetit - Hero + Goal SVG Generator
+   Smooth cartoon style with idle + walk animations
    ============================================ */
 
 const Sprites = (() => {
-  const SIZE = 24;
-  const COLS = 3; // frames: idle, walk_a, walk_b
-  const ROWS = 4; // directions: down, left, right, up
 
-  const C = {
-    body:    '#FFD966',
-    outline: '#B8960F',
-    belly:   '#FFF5CC',
-    eyeW:    '#FFFFFF',
-    eyeB:    '#1A1A2E',
-    beak:    '#FF6B35',
-    beakDk:  '#CC4400',
-    wing:    '#E8C020',
-    wingDk:  '#C09800',
-    crest1:  '#FF6B35',
-    crest2:  '#FF4422',
-    foot:    '#DD7020',
-    shadow:  'rgba(0,0,0,0.10)',
-  };
+  // ----- Hero SVGs (one per direction) -----
+  // dir 0=up (back view), 1=right (profile), 2=down (front), 3=left (profile)
 
-  let sheetUrl = null;
+  const HERO_DOWN = `
+    <svg class="hero-svg" data-dir-svg="2" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+      <ellipse class="hero-shadow" cx="24" cy="43" rx="13" ry="2.2" fill="rgba(0,0,0,0.2)"/>
+      <g class="hero-feet">
+        <line x1="19" y1="37" x2="17" y2="43" stroke="#E05020" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="29" y1="37" x2="31" y2="43" stroke="#E05020" stroke-width="2.5" stroke-linecap="round"/>
+      </g>
+      <g class="hero-main">
+        <ellipse class="hero-wing hero-wing-l" cx="10" cy="26" rx="4.5" ry="8" fill="#F0C030" stroke="#C48A00" stroke-width="1.2" transform="rotate(-12 10 26)"/>
+        <ellipse class="hero-wing hero-wing-r" cx="38" cy="26" rx="4.5" ry="8" fill="#F0C030" stroke="#C48A00" stroke-width="1.2" transform="rotate(12 38 26)"/>
+        <ellipse class="hero-body" cx="24" cy="25" rx="15" ry="14" fill="#FFD966" stroke="#C48A00" stroke-width="1.5"/>
+        <ellipse cx="24" cy="30" rx="10" ry="8" fill="#FFF3BF"/>
+        <path class="hero-crest" d="M20 11 Q22 5 24 11 Q26 5 28 11" stroke="#FF6B35" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <g class="hero-eyes">
+          <circle cx="19" cy="21" r="3.6" fill="white" stroke="#333" stroke-width="0.6"/>
+          <circle cx="20" cy="21.5" r="1.9" fill="#1a1a2e"/>
+          <circle cx="20.6" cy="20.8" r="0.7" fill="white"/>
+          <circle cx="29" cy="21" r="3.6" fill="white" stroke="#333" stroke-width="0.6"/>
+          <circle cx="30" cy="21.5" r="1.9" fill="#1a1a2e"/>
+          <circle cx="30.6" cy="20.8" r="0.7" fill="white"/>
+        </g>
+        <polygon points="21,28 27,28 24,34" fill="#FF6B35" stroke="#E05020" stroke-width="0.9" stroke-linejoin="round"/>
+      </g>
+    </svg>`;
 
-  function rect(ctx, x, y, w, h, c) {
-    ctx.fillStyle = c;
-    ctx.fillRect(Math.round(x), Math.round(y), w, h);
+  const HERO_UP = `
+    <svg class="hero-svg" data-dir-svg="0" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+      <ellipse class="hero-shadow" cx="24" cy="43" rx="13" ry="2.2" fill="rgba(0,0,0,0.2)"/>
+      <g class="hero-feet">
+        <line x1="19" y1="37" x2="17" y2="43" stroke="#E05020" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="29" y1="37" x2="31" y2="43" stroke="#E05020" stroke-width="2.5" stroke-linecap="round"/>
+      </g>
+      <g class="hero-main">
+        <ellipse class="hero-wing hero-wing-l" cx="10" cy="26" rx="4.5" ry="8" fill="#E6B800" stroke="#A07800" stroke-width="1.2" transform="rotate(-12 10 26)"/>
+        <ellipse class="hero-wing hero-wing-r" cx="38" cy="26" rx="4.5" ry="8" fill="#E6B800" stroke="#A07800" stroke-width="1.2" transform="rotate(12 38 26)"/>
+        <ellipse class="hero-body" cx="24" cy="25" rx="15" ry="14" fill="#E6B800" stroke="#A07800" stroke-width="1.5"/>
+        <ellipse cx="24" cy="19" rx="11" ry="9" fill="#FFD966"/>
+        <path class="hero-crest" d="M18 9 Q21 3 24 9 Q27 3 30 9" stroke="#FF6B35" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M19 34 Q24 39 29 34" stroke="#FF6B35" stroke-width="2.5" fill="#FF8C42" stroke-linejoin="round"/>
+      </g>
+    </svg>`;
+
+  const HERO_RIGHT = `
+    <svg class="hero-svg" data-dir-svg="1" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+      <ellipse class="hero-shadow" cx="24" cy="43" rx="13" ry="2.2" fill="rgba(0,0,0,0.2)"/>
+      <g class="hero-feet">
+        <line x1="21" y1="37" x2="19" y2="43" stroke="#E05020" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="27" y1="37" x2="29" y2="43" stroke="#E05020" stroke-width="2.5" stroke-linecap="round"/>
+      </g>
+      <g class="hero-main">
+        <path class="hero-tail" d="M6 22 Q2 24 5 30 Q10 28 10 25 Z" fill="#F0C030" stroke="#C48A00" stroke-width="1.2" stroke-linejoin="round"/>
+        <ellipse class="hero-body" cx="24" cy="25" rx="14" ry="13" fill="#FFD966" stroke="#C48A00" stroke-width="1.5"/>
+        <ellipse cx="26" cy="30" rx="9" ry="6" fill="#FFF3BF"/>
+        <ellipse class="hero-wing hero-wing-r" cx="20" cy="26" rx="6" ry="8" fill="#F0C030" stroke="#C48A00" stroke-width="1.2"/>
+        <path class="hero-crest" d="M20 11 Q22 5 24 11 Q26 5 28 11" stroke="#FF6B35" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <g class="hero-eyes">
+          <circle cx="31" cy="20" r="3.6" fill="white" stroke="#333" stroke-width="0.6"/>
+          <circle cx="32.3" cy="20.5" r="1.9" fill="#1a1a2e"/>
+          <circle cx="32.9" cy="19.8" r="0.7" fill="white"/>
+        </g>
+        <polygon points="36,20 43,22 36,24" fill="#FF6B35" stroke="#E05020" stroke-width="0.9" stroke-linejoin="round"/>
+      </g>
+    </svg>`;
+
+  const HERO_LEFT = `
+    <svg class="hero-svg" data-dir-svg="3" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+      <ellipse class="hero-shadow" cx="24" cy="43" rx="13" ry="2.2" fill="rgba(0,0,0,0.2)"/>
+      <g class="hero-feet">
+        <line x1="21" y1="37" x2="19" y2="43" stroke="#E05020" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="27" y1="37" x2="29" y2="43" stroke="#E05020" stroke-width="2.5" stroke-linecap="round"/>
+      </g>
+      <g class="hero-main">
+        <path class="hero-tail" d="M42 22 Q46 24 43 30 Q38 28 38 25 Z" fill="#F0C030" stroke="#C48A00" stroke-width="1.2" stroke-linejoin="round"/>
+        <ellipse class="hero-body" cx="24" cy="25" rx="14" ry="13" fill="#FFD966" stroke="#C48A00" stroke-width="1.5"/>
+        <ellipse cx="22" cy="30" rx="9" ry="6" fill="#FFF3BF"/>
+        <ellipse class="hero-wing hero-wing-l" cx="28" cy="26" rx="6" ry="8" fill="#F0C030" stroke="#C48A00" stroke-width="1.2"/>
+        <path class="hero-crest" d="M20 11 Q22 5 24 11 Q26 5 28 11" stroke="#FF6B35" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <g class="hero-eyes">
+          <circle cx="17" cy="20" r="3.6" fill="white" stroke="#333" stroke-width="0.6"/>
+          <circle cx="15.7" cy="20.5" r="1.9" fill="#1a1a2e"/>
+          <circle cx="15.1" cy="19.8" r="0.7" fill="white"/>
+        </g>
+        <polygon points="12,20 5,22 12,24" fill="#FF6B35" stroke="#E05020" stroke-width="0.9" stroke-linejoin="round"/>
+      </g>
+    </svg>`;
+
+  function initHero(heroEl) {
+    // Inject all 4 SVGs; CSS will show only the active one via data-dir
+    heroEl.innerHTML = HERO_UP + HERO_RIGHT + HERO_DOWN + HERO_LEFT;
   }
 
-  function generate() {
-    const canvas = document.createElement('canvas');
-    canvas.width = SIZE * COLS;
-    canvas.height = SIZE * ROWS;
-    const ctx = canvas.getContext('2d');
-    ctx.imageSmoothingEnabled = false;
+  // ----- Goal: smooth cartoon treasure chest -----
+  const GOAL_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+    <defs>
+      <linearGradient id="lid-g" x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0" stop-color="#C48A3D"/>
+        <stop offset="1" stop-color="#8B4513"/>
+      </linearGradient>
+      <linearGradient id="body-g" x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0" stop-color="#9B5A1F"/>
+        <stop offset="1" stop-color="#5C2E0A"/>
+      </linearGradient>
+      <linearGradient id="gold-g" x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0" stop-color="#FFF3A0"/>
+        <stop offset="0.5" stop-color="#FFD93D"/>
+        <stop offset="1" stop-color="#B8860B"/>
+      </linearGradient>
+    </defs>
+    <ellipse cx="24" cy="42" rx="14" ry="2.2" fill="rgba(0,0,0,0.25)"/>
+    <path d="M8 18 Q8 8 24 8 Q40 8 40 18 L40 22 L8 22 Z" fill="url(#lid-g)" stroke="#3A1A05" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M12 13 Q14 10 18 10" stroke="rgba(255,255,255,0.35)" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <rect x="8" y="21" width="32" height="20" rx="2" fill="url(#body-g)" stroke="#3A1A05" stroke-width="1.5"/>
+    <rect x="8" y="27" width="32" height="3" fill="url(#gold-g)" stroke="#3A1A05" stroke-width="0.8"/>
+    <rect x="8" y="37" width="32" height="3" fill="url(#gold-g)" stroke="#3A1A05" stroke-width="0.8"/>
+    <rect x="8" y="20" width="32" height="3" fill="url(#gold-g)" stroke="#3A1A05" stroke-width="0.8"/>
+    <circle cx="11" cy="24" r="0.8" fill="#FFD93D" stroke="#3A1A05" stroke-width="0.4"/>
+    <circle cx="37" cy="24" r="0.8" fill="#FFD93D" stroke="#3A1A05" stroke-width="0.4"/>
+    <circle cx="11" cy="34" r="0.8" fill="#FFD93D" stroke="#3A1A05" stroke-width="0.4"/>
+    <circle cx="37" cy="34" r="0.8" fill="#FFD93D" stroke="#3A1A05" stroke-width="0.4"/>
+    <rect x="20" y="17" width="8" height="10" rx="1.5" fill="url(#gold-g)" stroke="#3A1A05" stroke-width="1"/>
+    <circle cx="24" cy="21" r="1.3" fill="#3A1A05"/>
+    <rect x="23.3" y="21" width="1.4" height="3" fill="#3A1A05"/>
+    <circle cx="30" cy="14" r="1" fill="#FFF9C4"><animate attributeName="opacity" values="0;1;0" dur="2.4s" repeatCount="indefinite"/></circle>
+    <circle cx="15" cy="16" r="0.8" fill="#FFF9C4"><animate attributeName="opacity" values="0;1;0" dur="2.4s" begin="0.8s" repeatCount="indefinite"/></circle>
+    <circle cx="34" cy="34" r="0.8" fill="#FFF9C4"><animate attributeName="opacity" values="0;1;0" dur="2.4s" begin="1.6s" repeatCount="indefinite"/></circle>
+  </svg>`;
 
-    for (let row = 0; row < ROWS; row++) {
-      for (let col = 0; col < COLS; col++) {
-        drawBird(ctx, col * SIZE, row * SIZE, row, col);
-      }
-    }
-
-    sheetUrl = canvas.toDataURL();
-    return sheetUrl;
-  }
-
-  function drawBody(ctx, ox, oy, bob) {
-    const by = oy + 5 + bob;
-    const bx = ox + 6;
-
-    // Shadow under body
-    rect(ctx, ox + 7, oy + 19, 10, 2, C.shadow);
-
-    // Outline
-    rect(ctx, bx + 3, by,     6, 1, C.outline);
-    rect(ctx, bx + 1, by + 1, 10, 1, C.outline);
-    rect(ctx, bx,     by + 2, 12, 1, C.outline);
-    rect(ctx, bx,     by + 10, 12, 1, C.outline);
-    rect(ctx, bx + 1, by + 11, 10, 1, C.outline);
-    rect(ctx, bx + 3, by + 12, 6, 1, C.outline);
-    // sides
-    for (let i = 2; i <= 9; i++) {
-      rect(ctx, bx, by + i, 1, 1, C.outline);
-      rect(ctx, bx + 11, by + i, 1, 1, C.outline);
-    }
-
-    // Fill body
-    rect(ctx, bx + 3, by + 1, 6, 1, C.body);
-    rect(ctx, bx + 1, by + 2, 10, 8, C.body);
-    rect(ctx, bx + 1, by + 10, 10, 1, C.body);
-    rect(ctx, bx + 3, by + 11, 6, 1, C.body);
-  }
-
-  function drawBird(ctx, ox, oy, dir, frame) {
-    // dir: 0=down, 1=left, 2=right, 3=up
-    // frame: 0=idle, 1=walk_a, 2=walk_b
-    const bob = (frame === 1) ? -1 : 0;
-    const by = oy + 5 + bob;
-    const bx = ox + 6;
-
-    drawBody(ctx, ox, oy, bob);
-
-    if (dir === 0) drawDown(ctx, ox, oy, bx, by, frame);
-    else if (dir === 1) drawLeft(ctx, ox, oy, bx, by, frame);
-    else if (dir === 2) drawRight(ctx, ox, oy, bx, by, frame);
-    else drawUp(ctx, ox, oy, bx, by, frame);
-  }
-
-  function drawDown(ctx, ox, oy, bx, by, frame) {
-    // Crest
-    rect(ctx, bx + 6, by - 3, 2, 1, C.crest2);
-    rect(ctx, bx + 5, by - 2, 3, 1, C.crest1);
-    rect(ctx, bx + 5, by - 1, 2, 1, C.crest1);
-
-    // Eyes
-    rect(ctx, bx + 2, by + 3, 3, 3, C.eyeW);
-    rect(ctx, bx + 3, by + 4, 2, 2, C.eyeB);
-    rect(ctx, bx + 4, by + 4, 1, 1, C.eyeW); // highlight
-
-    rect(ctx, bx + 7, by + 3, 3, 3, C.eyeW);
-    rect(ctx, bx + 8, by + 4, 2, 2, C.eyeB);
-    rect(ctx, bx + 9, by + 4, 1, 1, C.eyeW);
-
-    // Beak
-    rect(ctx, bx + 4, by + 8, 4, 2, C.beak);
-    rect(ctx, bx + 5, by + 10, 2, 2, C.beak);
-    rect(ctx, bx + 5, by + 12, 1, 1, C.beakDk);
-
-    // Belly
-    rect(ctx, bx + 3, by + 6, 6, 3, C.belly);
-
-    // Wings
-    rect(ctx, bx - 2, by + 4, 2, 5, C.wing);
-    rect(ctx, bx - 2, by + 4, 2, 1, C.wingDk);
-    rect(ctx, bx + 12, by + 4, 2, 5, C.wing);
-    rect(ctx, bx + 12, by + 4, 2, 1, C.wingDk);
-
-    // Feet
-    drawFeetDown(ctx, bx, by, frame);
-  }
-
-  function drawRight(ctx, ox, oy, bx, by, frame) {
-    // Crest (on back of head)
-    rect(ctx, bx + 4, by - 3, 2, 1, C.crest2);
-    rect(ctx, bx + 3, by - 2, 3, 1, C.crest1);
-    rect(ctx, bx + 3, by - 1, 2, 1, C.crest1);
-
-    // Eye (right side)
-    rect(ctx, bx + 7, by + 3, 3, 3, C.eyeW);
-    rect(ctx, bx + 8, by + 4, 2, 2, C.eyeB);
-    rect(ctx, bx + 9, by + 4, 1, 1, C.eyeW);
-
-    // Beak (pointing right)
-    rect(ctx, bx + 12, by + 5, 3, 2, C.beak);
-    rect(ctx, bx + 15, by + 5, 2, 1, C.beak);
-    rect(ctx, bx + 15, by + 6, 1, 1, C.beakDk);
-
-    // Belly
-    rect(ctx, bx + 3, by + 6, 5, 3, C.belly);
-
-    // Wing (left side visible)
-    rect(ctx, bx - 2, by + 4, 3, 5, C.wing);
-    rect(ctx, bx - 2, by + 4, 3, 1, C.wingDk);
-
-    // Tail
-    rect(ctx, bx - 1, by + 8, 2, 3, C.crest1);
-
-    // Feet
-    drawFeetSide(ctx, bx, by, frame, 1);
-  }
-
-  function drawLeft(ctx, ox, oy, bx, by, frame) {
-    // Crest
-    rect(ctx, bx + 6, by - 3, 2, 1, C.crest2);
-    rect(ctx, bx + 6, by - 2, 3, 1, C.crest1);
-    rect(ctx, bx + 7, by - 1, 2, 1, C.crest1);
-
-    // Eye (left side)
-    rect(ctx, bx + 2, by + 3, 3, 3, C.eyeW);
-    rect(ctx, bx + 2, by + 4, 2, 2, C.eyeB);
-    rect(ctx, bx + 2, by + 4, 1, 1, C.eyeW);
-
-    // Beak (pointing left)
-    rect(ctx, bx - 3, by + 5, 3, 2, C.beak);
-    rect(ctx, bx - 5, by + 5, 2, 1, C.beak);
-    rect(ctx, bx - 4, by + 6, 1, 1, C.beakDk);
-
-    // Belly
-    rect(ctx, bx + 4, by + 6, 5, 3, C.belly);
-
-    // Wing (right side visible)
-    rect(ctx, bx + 11, by + 4, 3, 5, C.wing);
-    rect(ctx, bx + 11, by + 4, 3, 1, C.wingDk);
-
-    // Tail
-    rect(ctx, bx + 11, by + 8, 2, 3, C.crest1);
-
-    // Feet
-    drawFeetSide(ctx, bx, by, frame, -1);
-  }
-
-  function drawUp(ctx, ox, oy, bx, by, frame) {
-    // Crest (very visible from behind)
-    rect(ctx, bx + 5, by - 4, 2, 1, C.crest2);
-    rect(ctx, bx + 4, by - 3, 4, 1, C.crest2);
-    rect(ctx, bx + 4, by - 2, 4, 1, C.crest1);
-    rect(ctx, bx + 4, by - 1, 3, 1, C.crest1);
-
-    // No eyes (back of head)
-    // Back pattern
-    rect(ctx, bx + 4, by + 3, 4, 2, C.wingDk);
-
-    // Wings
-    rect(ctx, bx - 2, by + 4, 3, 5, C.wing);
-    rect(ctx, bx - 2, by + 4, 3, 1, C.wingDk);
-    rect(ctx, bx + 11, by + 4, 3, 5, C.wing);
-    rect(ctx, bx + 11, by + 4, 3, 1, C.wingDk);
-
-    // Tail
-    rect(ctx, bx + 4, by + 10, 4, 2, C.crest1);
-    rect(ctx, bx + 5, by + 12, 2, 2, C.crest1);
-    rect(ctx, bx + 5, by + 14, 1, 1, C.crest2);
-
-    // Feet
-    drawFeetDown(ctx, bx, by, frame);
-  }
-
-  function drawFeetDown(ctx, bx, by, frame) {
-    const fy = by + 13;
-    if (frame === 0) {
-      rect(ctx, bx + 2, fy, 2, 3, C.foot);
-      rect(ctx, bx + 1, fy + 2, 1, 1, C.foot);
-      rect(ctx, bx + 8, fy, 2, 3, C.foot);
-      rect(ctx, bx + 10, fy + 2, 1, 1, C.foot);
-    } else if (frame === 1) {
-      rect(ctx, bx + 1, fy - 1, 2, 3, C.foot);
-      rect(ctx, bx + 0, fy + 1, 1, 1, C.foot);
-      rect(ctx, bx + 9, fy, 2, 3, C.foot);
-      rect(ctx, bx + 11, fy + 2, 1, 1, C.foot);
-    } else {
-      rect(ctx, bx + 2, fy, 2, 3, C.foot);
-      rect(ctx, bx + 1, fy + 2, 1, 1, C.foot);
-      rect(ctx, bx + 10, fy - 1, 2, 3, C.foot);
-      rect(ctx, bx + 12, fy + 1, 1, 1, C.foot);
-    }
-  }
-
-  function drawFeetSide(ctx, bx, by, frame, dir) {
-    const fy = by + 13;
-    const fx1 = bx + 3;
-    const fx2 = bx + 7;
-    if (frame === 0) {
-      rect(ctx, fx1, fy, 2, 3, C.foot);
-      rect(ctx, fx1 + dir, fy + 2, 1, 1, C.foot);
-      rect(ctx, fx2, fy, 2, 3, C.foot);
-      rect(ctx, fx2 + dir, fy + 2, 1, 1, C.foot);
-    } else if (frame === 1) {
-      rect(ctx, fx1 + dir * 2, fy - 1, 2, 3, C.foot);
-      rect(ctx, fx1 + dir * 3, fy + 1, 1, 1, C.foot);
-      rect(ctx, fx2 - dir, fy, 2, 3, C.foot);
-      rect(ctx, fx2, fy + 2, 1, 1, C.foot);
-    } else {
-      rect(ctx, fx1 - dir, fy, 2, 3, C.foot);
-      rect(ctx, fx1, fy + 2, 1, 1, C.foot);
-      rect(ctx, fx2 + dir * 2, fy - 1, 2, 3, C.foot);
-      rect(ctx, fx2 + dir * 3, fy + 1, 1, 1, C.foot);
-    }
-  }
-
-  // Map game direction to sprite row
-  // Game: 0=up, 1=right, 2=down, 3=left
-  // Sprite rows: 0=down, 1=left, 2=right, 3=up
-  const DIR_TO_ROW = [3, 2, 0, 1];
-
-  // ============================================
-  //  Treasure chest (24x24) - goal sprite
-  // ============================================
-  let goalUrl = null;
-
-  function generateGoal() {
-    const canvas = document.createElement('canvas');
-    canvas.width = SIZE;
-    canvas.height = SIZE;
-    const ctx = canvas.getContext('2d');
-    ctx.imageSmoothingEnabled = false;
-
-    const out    = '#3A1A05';
-    const woodM  = '#9B5A1F';
-    const woodL  = '#C48A3D';
-    const woodD  = '#6B3410';
-    const goldD  = '#B8860B';
-    const goldL  = '#FFD93D';
-    const goldH  = '#FFF9C4';
-    const shadow = 'rgba(0,0,0,0.3)';
-
-    // Ground shadow
-    rect(ctx, 5, 21, 14, 1, shadow);
-    rect(ctx, 6, 22, 12, 1, shadow);
-
-    // --- Lid outline (rounded top) ---
-    rect(ctx, 7, 4, 10, 1, out);
-    rect(ctx, 5, 5, 14, 1, out);
-    rect(ctx, 4, 6, 16, 1, out);
-    rect(ctx, 3, 7, 1, 3, out);
-    rect(ctx, 20, 7, 1, 3, out);
-
-    // Lid fill
-    rect(ctx, 8, 4, 8, 1, woodM);
-    rect(ctx, 6, 5, 12, 1, woodM);
-    rect(ctx, 5, 6, 14, 1, woodM);
-    rect(ctx, 4, 7, 16, 3, woodM);
-
-    // Lid highlight (shine on top-left)
-    rect(ctx, 9, 4, 3, 1, woodL);
-    rect(ctx, 7, 5, 3, 1, woodL);
-    rect(ctx, 6, 6, 3, 1, woodL);
-    rect(ctx, 5, 7, 2, 1, woodL);
-
-    // Gold band separating lid from body
-    rect(ctx, 4, 10, 16, 1, goldL);
-    rect(ctx, 4, 10, 1, 1, goldD);
-    rect(ctx, 19, 10, 1, 1, goldD);
-
-    // --- Body ---
-    rect(ctx, 3, 11, 1, 9, out);    // left
-    rect(ctx, 20, 11, 1, 9, out);   // right
-    rect(ctx, 4, 20, 16, 1, out);   // bottom
-
-    // Body fill
-    rect(ctx, 4, 11, 16, 9, woodM);
-
-    // Vertical plank highlights / shading
-    rect(ctx, 4, 11, 1, 9, woodL);
-    rect(ctx, 9, 11, 1, 9, woodL);
-    rect(ctx, 14, 11, 1, 9, woodL);
-    rect(ctx, 19, 11, 1, 9, woodD);
-
-    // Gold middle band
-    rect(ctx, 4, 15, 16, 1, goldL);
-    rect(ctx, 4, 16, 16, 1, goldD);
-
-    // Gold bottom trim
-    rect(ctx, 4, 19, 16, 1, goldL);
-
-    // --- Lock at lid/body junction ---
-    rect(ctx, 10, 9, 4, 5, out);      // outline
-    rect(ctx, 11, 10, 2, 3, goldL);   // gold center
-    rect(ctx, 11, 10, 1, 1, goldH);   // highlight
-    rect(ctx, 12, 12, 1, 1, goldD);   // shadow
-    rect(ctx, 11, 13, 1, 1, out);     // keyhole
-
-    // --- Sparkles ---
-    rect(ctx, 16, 5, 1, 1, goldH);
-    rect(ctx, 17, 6, 1, 1, goldH);
-    rect(ctx, 6, 13, 1, 1, goldH);
-
-    goalUrl = canvas.toDataURL();
-    return goalUrl;
+  function getGoalUrl() {
+    return 'data:image/svg+xml;utf8,' + encodeURIComponent(GOAL_SVG);
   }
 
   return {
-    generate,
-    generateGoal,
-    getSheetUrl() { return sheetUrl; },
-    getGoalUrl() { return goalUrl; },
-    SIZE,
-    COLS,
-    DIR_TO_ROW,
+    initHero,
+    getGoalUrl,
   };
 })();
