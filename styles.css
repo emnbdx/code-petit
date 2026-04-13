@@ -684,7 +684,7 @@ html, body {
 .hero.walking .hero-wing-r {
   animation: wing-walk-r 0.25s ease-in-out infinite;
 }
-.hero.walking .hero-feet line {
+.hero.walking .hero-feet * {
   animation: feet-walk 0.25s ease-in-out infinite;
 }
 @keyframes walk-bounce {
