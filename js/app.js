@@ -10,7 +10,12 @@ const App = (() => {
     stars: {},            // "w-l": stars earned (1-3)
     lastWorld: 1,
     lastLevel: 1,
+    hero: null,           // { id, preset } — null means not chosen yet
   };
+
+  // Hero selection state
+  let heroSelectId = 'bird';
+  let heroSelectPreset = 0;
 
   let currentWorld = 1;
   let currentLevel = 1;
@@ -22,7 +27,7 @@ const App = (() => {
 
   function init() {
     // Cache screens
-    ['home', 'worlds', 'levels', 'game'].forEach(id => {
+    ['home', 'worlds', 'levels', 'game', 'hero'].forEach(id => {
       screens[id] = document.getElementById('screen-' + id);
     });
 
@@ -41,10 +46,17 @@ const App = (() => {
     loadSave();
 
     // Navigation buttons
-    document.getElementById('btn-start').addEventListener('click', () => showScreen('worlds'));
+    document.getElementById('btn-start').addEventListener('click', () => {
+      if (!save.hero) {
+        showScreen('hero');
+      } else {
+        showScreen('worlds');
+      }
+    });
     document.getElementById('btn-continue').addEventListener('click', () => {
       loadAndPlayLevel(save.lastWorld, save.lastLevel);
     });
+    document.getElementById('btn-hero-change').addEventListener('click', () => showScreen('hero'));
     document.getElementById('btn-worlds-back').addEventListener('click', () => showScreen('home'));
     document.getElementById('btn-levels-back').addEventListener('click', () => showScreen('worlds'));
     document.getElementById('btn-game-back').addEventListener('click', () => {
@@ -70,6 +82,15 @@ const App = (() => {
       Game.resetLevel();
     });
 
+    // Hero confirm button
+    document.getElementById('btn-hero-confirm').addEventListener('click', () => {
+      save.hero = { id: heroSelectId, preset: heroSelectPreset };
+      saveToDisk();
+      applyHeroConfig();
+      updateHomeButtons();
+      showScreen('worlds');
+    });
+
     // Reset progress
     document.getElementById('btn-reset-progress').addEventListener('click', () => {
       showModal('modal-reset');
@@ -80,9 +101,15 @@ const App = (() => {
     document.getElementById('btn-reset-confirm').addEventListener('click', () => {
       hideModal('modal-reset');
       resetSave();
-      document.getElementById('btn-continue').style.display = 'none';
-      document.getElementById('btn-reset-progress').style.display = 'none';
+      updateHomeButtons();
     });
+
+    // Apply saved hero config
+    if (save.hero) {
+      heroSelectId = save.hero.id;
+      heroSelectPreset = save.hero.preset;
+      applyHeroConfig();
+    }
 
     // Show continue / reset buttons if there's progress
     updateHomeButtons();
@@ -91,11 +118,18 @@ const App = (() => {
     showScreen('home');
   }
 
+  function applyHeroConfig() {
+    Sprites.setHeroConfig(heroSelectId, heroSelectPreset);
+    Game.refreshHero();
+  }
+
   function updateHomeButtons() {
     const hasProgress = save.lastWorld > 1 || save.lastLevel > 1 ||
       Object.keys(save.stars).length > 0;
+    const hasHero = !!save.hero;
     document.getElementById('btn-continue').style.display = hasProgress ? '' : 'none';
     document.getElementById('btn-reset-progress').style.display = hasProgress ? '' : 'none';
+    document.getElementById('btn-hero-change').style.display = hasHero ? '' : 'none';
   }
 
   function showScreen(name) {
@@ -105,6 +139,74 @@ const App = (() => {
     if (name === 'worlds') buildWorldsScreen();
     if (name === 'levels') showLevels(currentWorld);
     if (name === 'home') updateHomeButtons();
+    if (name === 'hero') buildHeroScreen();
+  }
+
+  // ---- Hero Select Screen ----
+  function buildHeroScreen() {
+    // Initialize from current save
+    heroSelectId = save.hero ? save.hero.id : 'bird';
+    heroSelectPreset = save.hero ? save.hero.preset : 0;
+
+    renderHeroCards();
+    renderColorSwatches();
+  }
+
+  function renderHeroCards() {
+    const container = document.getElementById('hero-cards');
+    container.innerHTML = '';
+
+    Sprites.HERO_DEFS.forEach(def => {
+      const card = document.createElement('div');
+      card.className = 'hero-card' + (def.id === heroSelectId ? ' selected' : '');
+      card.dataset.heroId = def.id;
+
+      // Preview SVG with current preset for this hero
+      const presetIdx = def.id === heroSelectId ? heroSelectPreset : 0;
+      const previewSVG = Sprites.getPreviewSVG(def.id, presetIdx);
+
+      card.innerHTML = `
+        <div class="hero-card-preview">${previewSVG}</div>
+        <div class="hero-card-name">${def.name}</div>
+      `;
+
+      card.addEventListener('click', () => {
+        heroSelectId = def.id;
+        heroSelectPreset = 0;
+        renderHeroCards();
+        renderColorSwatches();
+      });
+
+      container.appendChild(card);
+    });
+  }
+
+  function renderColorSwatches() {
+    const container = document.getElementById('hero-color-swatches');
+    container.innerHTML = '';
+
+    const def = Sprites.getHeroDef(heroSelectId);
+
+    def.presets.forEach((preset, idx) => {
+      const swatch = document.createElement('div');
+      swatch.className = 'hero-color-swatch' + (idx === heroSelectPreset ? ' selected' : '');
+
+      const previewSVG = Sprites.getPreviewSVG(heroSelectId, idx);
+
+      swatch.innerHTML = `
+        <div class="swatch-preview">${previewSVG}</div>
+        <div class="swatch-name">${preset.name}</div>
+      `;
+
+      swatch.addEventListener('click', () => {
+        heroSelectPreset = idx;
+        renderColorSwatches();
+        // Update hero card preview with new color
+        renderHeroCards();
+      });
+
+      container.appendChild(swatch);
+    });
   }
 
   function setWorldTheme(worldId) {
@@ -380,7 +482,9 @@ const App = (() => {
   }
 
   function resetSave() {
-    save = { unlocked: { 1: 1 }, stars: {}, lastWorld: 1, lastLevel: 1 };
+    save = { unlocked: { 1: 1 }, stars: {}, lastWorld: 1, lastLevel: 1, hero: null };
+    heroSelectId = 'bird';
+    heroSelectPreset = 0;
     saveToDisk();
   }
 

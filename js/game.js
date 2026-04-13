@@ -50,7 +50,7 @@ const Game = (() => {
     gameArea = document.getElementById('game-area');
 
     // Inject the 4 direction SVGs into the hero container
-    Sprites.initHero(heroEl);
+    Sprites.initHero(heroEl, null, null);
 
     // Expose goal (treasure chest) SVG via CSS variable
     document.documentElement.style.setProperty('--goal-sprite', `url("${Sprites.getGoalUrl()}")`);
@@ -476,6 +476,10 @@ const Game = (() => {
     return state.speed;
   }
 
+  function refreshHero() {
+    if (heroEl) Sprites.initHero(heroEl, null, null);
+  }
+
   return {
     init,
     loadLevel,
@@ -483,6 +487,7 @@ const Game = (() => {
     execute,
     stop,
     cycleSpeed,
+    refreshHero,
     getState() { return state; },
     getStarsEarned,
     expandProgram,

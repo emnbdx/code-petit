@@ -41,6 +41,9 @@
       <button class="btn btn-secondary" id="btn-continue" style="display:none;">
         Continuer
       </button>
+      <button class="btn btn-hero-change" id="btn-hero-change" style="display:none;">
+        Changer de heros
+      </button>
       <button class="btn btn-reset-progress" id="btn-reset-progress" style="display:none;">
         Tout recommencer
       </button>
@@ -58,6 +61,29 @@
       </div>
     </div>
   </div>
+  </div>
+
+  <!-- HERO SELECT SCREEN -->
+  <div id="screen-hero" class="screen">
+    <div class="hero-select-container">
+      <h2 class="hero-select-title">Choisis ton heros !</h2>
+      <p class="hero-select-sub">Qui va t'accompagner dans l'aventure ?</p>
+
+      <div class="hero-cards" id="hero-cards">
+        <!-- Filled by JS -->
+      </div>
+
+      <div class="hero-colors-section" id="hero-colors-section">
+        <p class="hero-colors-label">Personnalise ses couleurs :</p>
+        <div class="hero-color-swatches" id="hero-color-swatches">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+
+      <button class="btn btn-play hero-confirm-btn" id="btn-hero-confirm">
+        C'est parti !
+      </button>
+    </div>
   </div>
 
   <!-- WORLD SELECT SCREEN -->
