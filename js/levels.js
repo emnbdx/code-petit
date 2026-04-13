@@ -1,17 +1,17 @@
 /* ============================================
-   CodePetit - Level Data (160 levels)
+   Tiny Logic - Level Data (160 levels)
    8 worlds x 20 levels each
    ============================================ */
 
 const WORLDS = [
-  { id: 1, name: 'La Prairie',   icon: '\u{1F33F}', desc: 'Premiers pas',       color: 'w1' },
-  { id: 2, name: 'La For\u00eat',icon: '\u{1F332}', desc: 'S\u00e9quences',     color: 'w2' },
-  { id: 3, name: 'La Plage',     icon: '\u{1F3D6}',  desc: 'Tourner',            color: 'w3' },
-  { id: 4, name: 'La Montagne',  icon: '\u{26F0}',   desc: 'Obstacles',          color: 'w4' },
-  { id: 5, name: 'Le D\u00e9sert',icon:'\u{1F3DC}',  desc: 'Patterns',           color: 'w5' },
-  { id: 6, name: "L'Oc\u00e9an", icon: '\u{1F30A}',  desc: 'Boucles',            color: 'w6' },
-  { id: 7, name: "L'Espace",     icon: '\u{1F680}',  desc: 'Fonctions',          color: 'w7' },
-  { id: 8, name: 'Le Ch\u00e2teau',icon:'\u{1F3F0}', desc: 'Tout ensemble',      color: 'w8' },
+  { id: 1, nameKey: 'world_1_name', icon: '\u{1F33F}', descKey: 'world_1_desc', color: 'w1' },
+  { id: 2, nameKey: 'world_2_name', icon: '\u{1F332}', descKey: 'world_2_desc', color: 'w2' },
+  { id: 3, nameKey: 'world_3_name', icon: '\u{1F3D6}', descKey: 'world_3_desc', color: 'w3' },
+  { id: 4, nameKey: 'world_4_name', icon: '\u{26F0}',  descKey: 'world_4_desc', color: 'w4' },
+  { id: 5, nameKey: 'world_5_name', icon: '\u{1F3DC}', descKey: 'world_5_desc', color: 'w5' },
+  { id: 6, nameKey: 'world_6_name', icon: '\u{1F30A}', descKey: 'world_6_desc', color: 'w6' },
+  { id: 7, nameKey: 'world_7_name', icon: '\u{1F680}', descKey: 'world_7_desc', color: 'w7' },
+  { id: 8, nameKey: 'world_8_name', icon: '\u{1F3F0}', descKey: 'world_8_desc', color: 'w8' },
 ];
 
 /*
@@ -35,13 +35,13 @@ const LEVELS = [
   // WORLD 1 - LA PRAIRIE (forward only)
   // =============================================
   // 1-1
-  { grid: ['.G'], hero: [0,0,1], tools: ['forward'], optimal: 1, hint: 'Appuie sur Avancer !', type: 'guided' },
+  { grid: ['.G'], hero: [0,0,1], tools: ['forward'], optimal: 1, hint: 'hint_press_forward', type: 'guided' },
   // 1-2
-  { grid: ['..G'], hero: [0,0,1], tools: ['forward'], optimal: 2, hint: 'Avance 2 fois', type: 'guided' },
+  { grid: ['..G'], hero: [0,0,1], tools: ['forward'], optimal: 2, hint: 'hint_forward_2', type: 'guided' },
   // 1-3
-  { grid: ['...G'], hero: [0,0,1], tools: ['forward'], optimal: 3, hint: 'Avance encore !', type: 'guided' },
+  { grid: ['...G'], hero: [0,0,1], tools: ['forward'], optimal: 3, hint: 'hint_forward_again', type: 'guided' },
   // 1-4
-  { grid: ['G','.','.'], hero: [0,2,0], tools: ['forward'], optimal: 2, hint: 'Ton heros monte', type: 'normal' },
+  { grid: ['G','.','.'], hero: [0,2,0], tools: ['forward'], optimal: 2, hint: 'hint_hero_goes_up', type: 'normal' },
   // 1-5
   { grid: ['G','.','.','.'], hero: [0,3,0], tools: ['forward'], optimal: 3, type: 'normal' },
   // 1-6
@@ -63,7 +63,7 @@ const LEVELS = [
   // 1-14
   { grid: ['.','.','G'], hero: [0,0,2], tools: ['forward'], optimal: 2, type: 'normal' },
   // 1-15
-  { grid: ['.*G'], hero: [0,0,1], tools: ['forward'], optimal: 2, hint: 'Ramasse les etoiles !', type: 'collect' },
+  { grid: ['.*G'], hero: [0,0,1], tools: ['forward'], optimal: 2, hint: 'hint_collect_stars', type: 'collect' },
   // 1-16
   { grid: ['.*.*G'], hero: [0,0,1], tools: ['forward'], optimal: 4, type: 'collect' },
   // 1-17
@@ -123,9 +123,9 @@ const LEVELS = [
   // WORLD 3 - LA PLAGE (turning)
   // =============================================
   // 3-1
-  { grid: ['.G','..'], hero: [0,1,0], tools: ['forward','right'], optimal: 3, hint: 'Avance, tourne, avance !', type: 'guided' },
+  { grid: ['.G','..'], hero: [0,1,0], tools: ['forward','right'], optimal: 3, hint: 'hint_forward_turn_forward', type: 'guided' },
   // 3-2
-  { grid: ['..','G.'], hero: [1,0,2], tools: ['forward','right'], optimal: 3, hint: 'Avance, tourne droite, avance', type: 'guided' },
+  { grid: ['..','G.'], hero: [1,0,2], tools: ['forward','right'], optimal: 3, hint: 'hint_forward_right_fwd', type: 'guided' },
   // 3-3
   { grid: ['..G','...','...'], hero: [0,2,0], tools: ['forward','right'], optimal: 4, type: 'normal' },
   // 3-4
@@ -143,7 +143,7 @@ const LEVELS = [
   // 3-10
   { grid: ['....','.G..','....','....','....'], hero: [0,4,0], tools: ['forward','right'], optimal: 6, type: 'normal' },
   // 3-11 (introduce left turn)
-  { grid: ['G.','..'], hero: [1,1,0], tools: ['forward','right','left'], optimal: 3, hint: 'Essaie tourne gauche !', type: 'guided' },
+  { grid: ['G.','..'], hero: [1,1,0], tools: ['forward','right','left'], optimal: 3, hint: 'hint_try_turn_left', type: 'guided' },
   // 3-12
   { grid: ['G..','...','...'], hero: [2,2,3], tools: ['forward','right','left'], optimal: 4, type: 'normal' },
   // 3-13
@@ -167,7 +167,7 @@ const LEVELS = [
   // WORLD 4 - LA MONTAGNE (obstacles / walls)
   // =============================================
   // 4-1
-  { grid: ['..G.','.#..','....'], hero: [0,2,0], tools: ['forward','left','right'], optimal: 4, hint: 'Contourne le mur !', type: 'guided' },
+  { grid: ['..G.','.#..','....'], hero: [0,2,0], tools: ['forward','left','right'], optimal: 4, hint: 'hint_go_around_wall', type: 'guided' },
   // 4-2
   { grid: ['....','..#.','..G.'], hero: [0,0,2], tools: ['forward','left','right'], optimal: 5, type: 'normal' },
   // 4-3
@@ -212,7 +212,7 @@ const LEVELS = [
   // Repetitive sequences: forward+right, zigzags, spirals
   // =============================================
   // 5-1: Staircase right 2 steps (fwd,fwd,right, fwd,fwd,right pattern)
-  { grid: ['..G','...','.#.','...'], hero: [0,3,0], tools: ['forward','left','right'], optimal: 5, hint: 'Repete le meme motif !', type: 'guided' },
+  { grid: ['..G','...','.#.','...'], hero: [0,3,0], tools: ['forward','left','right'], optimal: 5, hint: 'hint_repeat_pattern', type: 'guided' },
   // 5-2: Staircase left
   { grid: ['G..','...','.#.','...'], hero: [2,3,0], tools: ['forward','left','right'], optimal: 5, type: 'normal' },
   // 5-3: 3-step staircase right
@@ -256,7 +256,7 @@ const LEVELS = [
   // WORLD 6 - L'OCEAN (loops)
   // =============================================
   // 6-1: Simple loop forward x4
-  { grid: ['....G'], hero: [0,0,1], tools: ['forward','left','right','loop'], optimal: 2, hint: 'Boucle: avancer x4 !', type: 'guided' },
+  { grid: ['....G'], hero: [0,0,1], tools: ['forward','left','right','loop'], optimal: 2, hint: 'hint_loop_forward_4', type: 'guided' },
   // 6-2: Loop forward x6
   { grid: ['......G'], hero: [0,0,1], tools: ['forward','left','right','loop'], optimal: 2, type: 'normal' },
   // 6-3: Loop up x5
@@ -266,7 +266,7 @@ const LEVELS = [
   // 6-5: Loop forward with star
   { grid: ['.*.*.*G'], hero: [0,0,1], tools: ['forward','left','right','loop'], optimal: 2, type: 'collect' },
   // 6-6: Loop staircase (fwd+right) x3
-  { grid: ['..G','..#','.#.','...'], hero: [0,3,0], tools: ['forward','left','right','loop'], optimal: 3, hint: 'Boucle: avancer+droite !', type: 'guided' },
+  { grid: ['..G','..#','.#.','...'], hero: [0,3,0], tools: ['forward','left','right','loop'], optimal: 3, hint: 'hint_loop_forward_right', type: 'guided' },
   // 6-7: Loop staircase left x3
   { grid: ['G..','#..','...','.#.','...'], hero: [2,4,0], tools: ['forward','left','right','loop'], optimal: 3, type: 'normal' },
   // 6-8: Loop L-shape x2
@@ -301,7 +301,7 @@ const LEVELS = [
   // F1 = reusable sub-program
   // =============================================
   // 7-1: F1 = forward,forward - call F1 twice
-  { grid: ['....G'], hero: [0,0,1], tools: ['forward','left','right','loop','f1'], optimal: 4, hint: 'F1 = avancer+avancer', type: 'guided' },
+  { grid: ['....G'], hero: [0,0,1], tools: ['forward','left','right','loop','f1'], optimal: 4, hint: 'hint_f1_double_forward', type: 'guided' },
   // 7-2: F1 = fwd,fwd,fwd - use to cross
   { grid: ['......G'], hero: [0,0,1], tools: ['forward','left','right','loop','f1'], optimal: 5, type: 'normal' },
   // 7-3: F1 = fwd,right - staircase
@@ -345,7 +345,7 @@ const LEVELS = [
   // WORLD 8 - LE CHATEAU (F1 + F2 + loops + switches)
   // =============================================
   // 8-1: Review - F1 = fwd,fwd in loop
-  { grid: ['..........G'], hero: [0,0,1], tools: ['forward','left','right','loop','f1','f2'], optimal: 4, hint: 'F1+F2+boucles !', type: 'guided' },
+  { grid: ['..........G'], hero: [0,0,1], tools: ['forward','left','right','loop','f1','f2'], optimal: 4, hint: 'hint_f1_f2_loops', type: 'guided' },
   // 8-2: F1 = fwd,right / F2 = fwd,left
   { grid: ['....G','...#.','.#...','.....','..#..'], hero: [0,4,0], tools: ['forward','left','right','loop','f1','f2'], optimal: 6, type: 'normal' },
   // 8-3: F1 + F2 zigzag
@@ -365,7 +365,7 @@ const LEVELS = [
   // 8-10: Big loop+function maze
   { grid: ['G........','########.','.........','.########','.........','.########','.........'], hero: [8,0,2], tools: ['forward','left','right','loop','f1','f2'], optimal: 6, type: 'normal' },
   // 8-11: Switch intro
-  { grid: ['..G..','..D..','.....','..S..','.....','.....'], hero: [2,5,0], tools: ['forward','left','right','loop','f1','f2'], optimal: 4, hint: 'Active le bouton !', type: 'switch' },
+  { grid: ['..G..','..D..','.....','..S..','.....','.....'], hero: [2,5,0], tools: ['forward','left','right','loop','f1','f2'], optimal: 4, hint: 'hint_activate_button', type: 'switch' },
   // 8-12: Switch + corridor
   { grid: ['G.....','.D....','......','......','.S....','......'], hero: [1,5,0], tools: ['forward','left','right','loop','f1','f2'], optimal: 5, type: 'switch' },
   // 8-13: Switch + maze

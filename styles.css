@@ -160,6 +160,31 @@ html, body {
   margin-bottom: 20px;
 }
 
+/* ---- Language switcher ---- */
+.lang-switcher {
+  display: flex;
+  gap: 6px;
+}
+.lang-btn {
+  padding: 5px 12px;
+  border: 2px solid var(--bg-dark);
+  background: var(--white);
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--text-light);
+  transition: all 0.15s;
+}
+.lang-btn.active {
+  border-color: var(--w2);
+  color: var(--w2);
+  background: var(--w2-light, #bee3f8);
+}
+.lang-btn:active {
+  transform: scale(0.92);
+}
+
 /* Change hero button */
 .btn-hero-change {
   background: none;

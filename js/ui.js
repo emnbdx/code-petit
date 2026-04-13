@@ -1,5 +1,5 @@
 /* ============================================
-   CodePetit - UI Controller
+   Tiny Logic - UI Controller
    Handles instruction palette, program editing,
    tap-to-add, and game screen interactions.
    ============================================ */
@@ -27,12 +27,12 @@ const UI = (() => {
 
   // Instruction definitions
   const INSTRUCTIONS = {
-    forward: { icon: '\u2B06', label: 'Avancer', css: 'forward' },
-    left:    { icon: '\u21BA', label: 'Gauche', css: 'turn_left' },
-    right:   { icon: '\u21BB', label: 'Droite', css: 'turn_right' },
-    loop:    { icon: '\u{1F504}', label: 'Boucle', css: 'loop' },
-    f1:      { icon: 'F1', label: 'F1', css: 'call-f1' },
-    f2:      { icon: 'F2', label: 'F2', css: 'call-f2' },
+    forward: { icon: '\u2B06', labelKey: 'instr_forward', css: 'forward' },
+    left:    { icon: '\u21BA', labelKey: 'instr_left', css: 'turn_left' },
+    right:   { icon: '\u21BB', labelKey: 'instr_right', css: 'turn_right' },
+    loop:    { icon: '\u{1F504}', labelKey: 'instr_loop', css: 'loop' },
+    f1:      { icon: 'F1', labelKey: 'instr_f1', css: 'call-f1' },
+    f2:      { icon: 'F2', labelKey: 'instr_f2', css: 'call-f2' },
   };
 
   function init() {
@@ -103,7 +103,7 @@ const UI = (() => {
 
     // Hint
     if (level.hint) {
-      gameHint.textContent = level.hint;
+      gameHint.textContent = I18n.t(level.hint);
       gameHint.style.display = '';
     } else {
       gameHint.style.display = 'none';
@@ -135,7 +135,7 @@ const UI = (() => {
       const btn = document.createElement('button');
       btn.className = 'palette-btn ' + def.css;
       btn.innerHTML = `<span>${def.icon}</span>`;
-      btn.setAttribute('aria-label', def.label);
+      btn.setAttribute('aria-label', I18n.t(def.labelKey));
       btn.addEventListener('click', () => onPaletteTap(tool));
       palette.appendChild(btn);
     });
@@ -205,8 +205,8 @@ const UI = (() => {
     if (prog.length === 0) {
       const empty = document.createElement('div');
       empty.className = 'program-empty';
-      empty.textContent = activeTab === 'main' ? 'Ajoute des instructions !' :
-                          `Definis ${activeTab.toUpperCase()} ici`;
+      empty.textContent = activeTab === 'main' ? I18n.t('program_empty') :
+                          I18n.t('func_define', activeTab.toUpperCase());
       programSlots.appendChild(empty);
       return;
     }
@@ -357,7 +357,7 @@ const UI = (() => {
       const btn = document.createElement('button');
       btn.className = 'palette-btn ' + def.css;
       btn.innerHTML = `<span>${def.icon}</span>`;
-      btn.setAttribute('aria-label', def.label);
+      btn.setAttribute('aria-label', I18n.t(def.labelKey));
       btn.addEventListener('click', () => onPaletteTapWrapped(tool));
       palette.appendChild(btn);
     });
@@ -485,7 +485,7 @@ const UI = (() => {
 
       // Hint
       if (level.hint) {
-        gameHint.textContent = level.hint;
+        gameHint.textContent = I18n.t(level.hint);
         gameHint.style.display = '';
       } else {
         gameHint.style.display = 'none';

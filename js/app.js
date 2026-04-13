@@ -1,5 +1,5 @@
 /* ============================================
-   CodePetit - App Controller
+   Tiny Logic - App Controller
    Navigation, save system, progression.
    ============================================ */
 
@@ -104,6 +104,21 @@ const App = (() => {
       updateHomeButtons();
     });
 
+    // Detect language and apply i18n
+    I18n.detect();
+    I18n.applyAll();
+    updateLangButtons();
+
+    // Language switcher
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        I18n.setLang(btn.dataset.lang);
+        updateLangButtons();
+        if (screens.worlds && screens.worlds.classList.contains('active')) buildWorldsScreen();
+        if (screens.hero && screens.hero.classList.contains('active')) buildHeroScreen();
+      });
+    });
+
     // Apply saved hero config
     if (save.hero) {
       heroSelectId = save.hero.id;
@@ -121,6 +136,14 @@ const App = (() => {
   function applyHeroConfig() {
     Sprites.setHeroConfig(heroSelectId, heroSelectPreset);
     Game.refreshHero();
+  }
+
+  function updateLangButtons() {
+    const lang = I18n.getLang();
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    document.documentElement.lang = lang;
   }
 
   function updateHomeButtons() {
@@ -195,7 +218,7 @@ const App = (() => {
 
       swatch.innerHTML = `
         <div class="swatch-preview">${previewSVG}</div>
-        <div class="swatch-name">${preset.name}</div>
+        <div class="swatch-name">${I18n.t(preset.nameKey)}</div>
       `;
 
       swatch.addEventListener('click', () => {
@@ -232,8 +255,8 @@ const App = (() => {
       card.innerHTML = `
         <div class="world-card-icon">${world.icon}</div>
         <div class="world-card-info">
-          <div class="world-card-name">${world.name}</div>
-          <div class="world-card-desc">${world.desc}</div>
+          <div class="world-card-name">${I18n.t(world.nameKey)}</div>
+          <div class="world-card-desc">${I18n.t(world.descKey)}</div>
           <div class="world-card-progress">${unlocked ? progress.completed + '/20' : ''}</div>
         </div>
         ${unlocked ? '' : '<div class="world-card-lock">&#128274;</div>'}
@@ -275,7 +298,7 @@ const App = (() => {
   function showLevels(worldId) {
     setWorldTheme(worldId);
     const world = WORLDS.find(w => w.id === worldId);
-    levelsTitle.textContent = world ? world.name : 'Monde ' + worldId;
+    levelsTitle.textContent = world ? I18n.t(world.nameKey) : I18n.t('worlds_title') + ' ' + worldId;
 
     levelsGrid.innerHTML = '';
 
@@ -327,7 +350,7 @@ const App = (() => {
 
     // Update header
     const world = WORLDS.find(w => w.id === worldId);
-    document.getElementById('game-world-name').textContent = world ? world.name : '';
+    document.getElementById('game-world-name').textContent = world ? I18n.t(world.nameKey) : '';
     document.getElementById('game-level-num').textContent = 'Niveau ' + levelNum;
 
     // Load level in game engine
@@ -386,13 +409,13 @@ const App = (() => {
   }
 
   function onLevelFail(reason) {
-    let msg = 'Ton heros n\'a pas atteint le tresor.';
+    let msg = I18n.t('fail_msg_default');
     if (reason === 'empty') {
-      msg = 'Ajoute des instructions avant de lancer !';
+      msg = I18n.t('fail_msg_empty');
     } else if (reason === 'not_at_goal') {
       const state = Game.getState();
       if (state.totalStars > 0 && state.collected < state.totalStars) {
-        msg = 'N\'oublie pas de ramasser toutes les etoiles !';
+        msg = I18n.t('fail_msg_stars');
       }
     }
 
@@ -409,29 +432,29 @@ const App = (() => {
     victoryStars.innerHTML = starsHTML;
 
     // Title
-    const titles = ['Bravo !', 'Super !', 'Genial !', 'Parfait !', 'Magnifique !'];
-    victoryTitle.textContent = titles[Math.floor(Math.random() * titles.length)];
+    const titles = ['victory_title_1','victory_title_2','victory_title_3','victory_title_4','victory_title_5'];
+    victoryTitle.textContent = I18n.t(titles[Math.floor(Math.random() * titles.length)]);
 
     // Message
     let msg = '';
     if (result.stars === 3) {
-      msg = 'Solution parfaite !';
+      msg = I18n.t('victory_perfect');
     } else if (result.stars === 2) {
-      msg = 'Bien joue ! Peux-tu faire mieux ?';
+      msg = I18n.t('victory_good');
     } else {
-      msg = 'Tu as reussi ! Essaie avec moins d\'instructions.';
+      msg = I18n.t('victory_ok');
     }
     if (result.actions) {
-      msg += ` (${result.actions} instructions)`;
+      msg += ' ' + I18n.t('victory_actions', result.actions);
     }
     victoryMsg.textContent = msg;
 
     // Hide next button on last level of last world
     const btnNext = document.getElementById('btn-next');
     if (currentWorld === 8 && currentLevel === 20) {
-      btnNext.textContent = 'Termine !';
+      btnNext.textContent = I18n.t('btn_finish');
     } else {
-      btnNext.innerHTML = 'Suivant &#9654;';
+      btnNext.textContent = I18n.t('btn_next');
     }
 
     showModal('modal-victory');
@@ -463,7 +486,7 @@ const App = (() => {
   // ---- Save System ----
   function loadSave() {
     try {
-      const data = localStorage.getItem('codepetit_save');
+      const data = localStorage.getItem('tinylogic_save');
       if (data) {
         const parsed = JSON.parse(data);
         save = { ...save, ...parsed };
@@ -475,7 +498,7 @@ const App = (() => {
 
   function saveToDisk() {
     try {
-      localStorage.setItem('codepetit_save', JSON.stringify(save));
+      localStorage.setItem('tinylogic_save', JSON.stringify(save));
     } catch (e) {
       console.warn('Could not save:', e);
     }

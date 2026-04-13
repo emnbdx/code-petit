@@ -1,5 +1,5 @@
 /* ============================================
-   CodePetit - Hero + Goal SVG Generator
+   Tiny Logic - Hero + Goal SVG Generator
    3 heroes × 3 color presets × 4 directions
    ============================================ */
 
@@ -324,9 +324,9 @@ const Sprites = (() => {
       emoji: '🐣',
       makeSVGs: makeBirdSVGs,
       presets: [
-        { name: 'Soleil', p: '#FFD966', pd: '#C48A00', s: '#FF6B35', sd: '#E05020' },
-        { name: 'Ciel',   p: '#63b3ed', pd: '#2b6cb0', s: '#4fd1c5', sd: '#2c7a7b' },
-        { name: 'Rose',   p: '#f687b3', pd: '#97266d', s: '#f6ad55', sd: '#c05621' },
+        { nameKey: 'color_sun', p: '#FFD966', pd: '#C48A00', s: '#FF6B35', sd: '#E05020' },
+        { nameKey: 'color_sky',   p: '#63b3ed', pd: '#2b6cb0', s: '#4fd1c5', sd: '#2c7a7b' },
+        { nameKey: 'color_pink',   p: '#f687b3', pd: '#97266d', s: '#f6ad55', sd: '#c05621' },
       ],
     },
     {
@@ -335,9 +335,9 @@ const Sprites = (() => {
       emoji: '🐱',
       makeSVGs: makeCatSVGs,
       presets: [
-        { name: 'Caramel', p: '#f6ad55', pd: '#c05621', s: '#ed8936', sd: '#9c4221' },
-        { name: 'Gris',    p: '#a0aec0', pd: '#4a5568', s: '#fc8181', sd: '#c53030' },
-        { name: 'Violet',  p: '#b794f4', pd: '#553c9a', s: '#f687b3', sd: '#97266d' },
+        { nameKey: 'color_caramel', p: '#f6ad55', pd: '#c05621', s: '#ed8936', sd: '#9c4221' },
+        { nameKey: 'color_grey',    p: '#a0aec0', pd: '#4a5568', s: '#fc8181', sd: '#c53030' },
+        { nameKey: 'color_purple',  p: '#b794f4', pd: '#553c9a', s: '#f687b3', sd: '#97266d' },
       ],
     },
     {
@@ -346,9 +346,9 @@ const Sprites = (() => {
       emoji: '🤖',
       makeSVGs: makeRobotSVGs,
       presets: [
-        { name: 'Acier',  p: '#a0aec0', pd: '#4a5568', s: '#63b3ed', sd: '#2b6cb0' },
-        { name: 'Bronze', p: '#d69e2e', pd: '#744210', s: '#68d391', sd: '#276749' },
-        { name: 'Violet', p: '#b794f4', pd: '#553c9a', s: '#f687b3', sd: '#97266d' },
+        { nameKey: 'color_steel',  p: '#a0aec0', pd: '#4a5568', s: '#63b3ed', sd: '#2b6cb0' },
+        { nameKey: 'color_bronze', p: '#d69e2e', pd: '#744210', s: '#68d391', sd: '#276749' },
+        { nameKey: 'color_purple', p: '#b794f4', pd: '#553c9a', s: '#f687b3', sd: '#97266d' },
       ],
     },
   ];

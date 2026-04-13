@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-  <title>CodePetit - Apprends la logique en jouant !</title>
+  <title>Tiny Logic</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -33,19 +33,27 @@
           <line x1="30" y1="44" x2="33" y2="44" stroke="#FF6B35" stroke-width="2" stroke-linecap="round"/>
         </svg>
       </div>
-      <h1 class="home-title">CodePetit</h1>
-      <p class="home-subtitle">Apprends la logique en jouant !</p>
+      <h1 class="home-title" data-i18n="app_name">Tiny Logic</h1>
+      <p class="home-subtitle" data-i18n="home_subtitle">Learn logic by playing!</p>
+
+      <!-- Language switcher -->
+      <div class="lang-switcher" id="lang-switcher">
+        <button class="lang-btn active" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="fr">FR</button>
+        <button class="lang-btn" data-lang="es">ES</button>
+      </div>
+
       <button class="btn btn-play" id="btn-start">
-        <span class="btn-icon">&#9654;</span> Jouer
+        <span class="btn-icon">&#9654;</span> <span data-i18n="btn_play">Play</span>
       </button>
-      <button class="btn btn-secondary" id="btn-continue" style="display:none;">
-        Continuer
+      <button class="btn btn-secondary" id="btn-continue" style="display:none;" data-i18n="btn_continue">
+        Continue
       </button>
-      <button class="btn btn-hero-change" id="btn-hero-change" style="display:none;">
-        Changer de heros
+      <button class="btn btn-hero-change" id="btn-hero-change" style="display:none;" data-i18n="btn_change_hero">
+        Change hero
       </button>
-      <button class="btn btn-reset-progress" id="btn-reset-progress" style="display:none;">
-        Tout recommencer
+      <button class="btn btn-reset-progress" id="btn-reset-progress" style="display:none;" data-i18n="btn_reset_progress">
+        Reset progress
       </button>
     </div>
 
@@ -53,11 +61,11 @@
   <div id="modal-reset" class="modal" style="display:none;">
     <div class="modal-content">
       <div class="fail-icon">&#9888;</div>
-      <h2 class="fail-title" style="color:var(--text);">Tout recommencer ?</h2>
-      <p class="fail-msg">Toute ta progression sera effacee. Es-tu sur ?</p>
+      <h2 class="fail-title" style="color:var(--text);" data-i18n="reset_title">Reset everything?</h2>
+      <p class="fail-msg" data-i18n="reset_msg">All your progress will be lost. Sure?</p>
       <div class="victory-buttons">
-        <button class="btn btn-secondary" id="btn-reset-cancel">Non</button>
-        <button class="btn btn-play" id="btn-reset-confirm" style="background:#e53e3e;box-shadow:0 4px 0 #c53030;">Oui</button>
+        <button class="btn btn-secondary" id="btn-reset-cancel" data-i18n="btn_no">No</button>
+        <button class="btn btn-play" id="btn-reset-confirm" style="background:#e53e3e;box-shadow:0 4px 0 #c53030;" data-i18n="btn_yes">Yes</button>
       </div>
     </div>
   </div>
@@ -66,22 +74,22 @@
   <!-- HERO SELECT SCREEN -->
   <div id="screen-hero" class="screen">
     <div class="hero-select-container">
-      <h2 class="hero-select-title">Choisis ton heros !</h2>
-      <p class="hero-select-sub">Qui va t'accompagner dans l'aventure ?</p>
+      <h2 class="hero-select-title" data-i18n="hero_select_title">Choose your hero!</h2>
+      <p class="hero-select-sub" data-i18n="hero_select_sub">Who will join you on the adventure?</p>
 
       <div class="hero-cards" id="hero-cards">
         <!-- Filled by JS -->
       </div>
 
       <div class="hero-colors-section" id="hero-colors-section">
-        <p class="hero-colors-label">Personnalise ses couleurs :</p>
+        <p class="hero-colors-label" data-i18n="hero_colors_label">Customize colors:</p>
         <div class="hero-color-swatches" id="hero-color-swatches">
           <!-- Filled by JS -->
         </div>
       </div>
 
-      <button class="btn btn-play hero-confirm-btn" id="btn-hero-confirm">
-        C'est parti !
+      <button class="btn btn-play hero-confirm-btn" id="btn-hero-confirm" data-i18n="btn_hero_confirm">
+        Let's go!
       </button>
     </div>
   </div>
@@ -89,8 +97,8 @@
   <!-- WORLD SELECT SCREEN -->
   <div id="screen-worlds" class="screen">
     <div class="screen-header">
-      <button class="btn-back" id="btn-worlds-back" aria-label="Retour">&#9664;</button>
-      <h2 class="screen-title">Les Mondes</h2>
+      <button class="btn-back" id="btn-worlds-back" aria-label="Back">&#9664;</button>
+      <h2 class="screen-title" data-i18n="worlds_title">Worlds</h2>
       <div class="spacer"></div>
     </div>
     <div class="worlds-grid" id="worlds-grid">
@@ -101,8 +109,8 @@
   <!-- LEVEL SELECT SCREEN -->
   <div id="screen-levels" class="screen">
     <div class="screen-header">
-      <button class="btn-back" id="btn-levels-back" aria-label="Retour">&#9664;</button>
-      <h2 class="screen-title" id="levels-title">Monde 1</h2>
+      <button class="btn-back" id="btn-levels-back" aria-label="Back">&#9664;</button>
+      <h2 class="screen-title" id="levels-title">World 1</h2>
       <div class="spacer"></div>
     </div>
     <div class="levels-grid" id="levels-grid">
@@ -113,7 +121,7 @@
   <!-- GAME SCREEN -->
   <div id="screen-game" class="screen">
     <div class="game-header">
-      <button class="btn-back" id="btn-game-back" aria-label="Retour">&#9664;</button>
+      <button class="btn-back" id="btn-game-back" aria-label="Back">&#9664;</button>
       <div class="game-level-info">
         <span id="game-world-name"></span>
         <span id="game-level-num"></span>
@@ -131,15 +139,15 @@
     <div class="game-hint" id="game-hint" style="display:none;"></div>
 
     <div class="program-area" id="program-area">
-      <div class="program-label">Mon programme :</div>
+      <div class="program-label" data-i18n="program_label">My program:</div>
       <div class="program-slots" id="program-slots">
-        <div class="program-empty">Ajoute des instructions !</div>
+        <div class="program-empty" data-i18n="program_empty">Add instructions!</div>
       </div>
     </div>
 
     <div class="function-area" id="function-area" style="display:none;">
       <div class="function-tabs">
-        <button class="func-tab active" data-func="main" id="tab-main">Principal</button>
+        <button class="func-tab active" data-func="main" id="tab-main" data-i18n="tab_main">Main</button>
         <button class="func-tab" data-func="f1" id="tab-f1">F1</button>
         <button class="func-tab" data-func="f2" id="tab-f2" style="display:none;">F2</button>
       </div>
@@ -147,7 +155,7 @@
 
     <div class="loop-config" id="loop-config" style="display:none;">
       <div class="loop-config-inner">
-        <span class="loop-label">Combien de fois ?</span>
+        <span class="loop-label" data-i18n="loop_label">How many times?</span>
         <div class="loop-buttons">
           <button class="loop-btn" data-count="2">2</button>
           <button class="loop-btn" data-count="3">3</button>
@@ -155,7 +163,7 @@
           <button class="loop-btn" data-count="5">5</button>
           <button class="loop-btn" data-count="6">6</button>
         </div>
-        <button class="btn btn-small" id="loop-cancel">Annuler</button>
+        <button class="btn btn-small" id="loop-cancel" data-i18n="btn_cancel">Cancel</button>
       </div>
     </div>
 
@@ -164,19 +172,19 @@
     </div>
 
     <div class="controls">
-      <button class="btn btn-control btn-run" id="btn-run" aria-label="Jouer">
+      <button class="btn btn-control btn-run" id="btn-run" aria-label="Run">
         <span class="control-icon">&#9654;</span>
       </button>
       <button class="btn btn-control btn-stop" id="btn-stop" aria-label="Stop" style="display:none;">
         <span class="control-icon">&#9632;</span>
       </button>
-      <button class="btn btn-control btn-reset" id="btn-reset" aria-label="Recommencer">
+      <button class="btn btn-control btn-reset" id="btn-reset" aria-label="Reset">
         <span class="control-icon">&#8634;</span>
       </button>
-      <button class="btn btn-control btn-clear" id="btn-clear" aria-label="Tout effacer">
+      <button class="btn btn-control btn-clear" id="btn-clear" aria-label="Clear">
         <span class="control-icon">&#10005;</span>
       </button>
-      <button class="btn btn-control btn-speed" id="btn-speed" aria-label="Vitesse">
+      <button class="btn btn-control btn-speed" id="btn-speed" aria-label="Speed">
         <span class="control-icon" id="speed-icon">1x</span>
       </button>
     </div>
@@ -186,11 +194,11 @@
   <div id="modal-victory" class="modal" style="display:none;">
     <div class="modal-content victory-content">
       <div class="victory-stars" id="victory-stars"></div>
-      <h2 class="victory-title" id="victory-title">Bravo !</h2>
+      <h2 class="victory-title" id="victory-title">Great!</h2>
       <p class="victory-msg" id="victory-msg"></p>
       <div class="victory-buttons">
-        <button class="btn btn-secondary" id="btn-replay">Rejouer</button>
-        <button class="btn btn-play" id="btn-next">Suivant &#9654;</button>
+        <button class="btn btn-secondary" id="btn-replay" data-i18n="btn_replay">Replay</button>
+        <button class="btn btn-play" id="btn-next" data-i18n="btn_next">Next &#9654;</button>
       </div>
     </div>
   </div>
@@ -199,14 +207,15 @@
   <div id="modal-fail" class="modal" style="display:none;">
     <div class="modal-content fail-content">
       <div class="fail-icon">&#128533;</div>
-      <h2 class="fail-title" id="fail-title">Oups !</h2>
-      <p class="fail-msg" id="fail-msg">Ton heros n'a pas atteint le tresor. Essaie encore !</p>
+      <h2 class="fail-title" id="fail-title" data-i18n="fail_title">Oops!</h2>
+      <p class="fail-msg" id="fail-msg" data-i18n="fail_msg_default">Your hero didn't reach the treasure.</p>
       <div class="victory-buttons">
-        <button class="btn btn-play" id="btn-retry">Recommencer</button>
+        <button class="btn btn-play" id="btn-retry" data-i18n="btn_retry">Retry</button>
       </div>
     </div>
   </div>
 
+  <script src="js/i18n.js"></script>
   <script src="js/sprites.js"></script>
   <script src="js/sounds.js"></script>
   <script src="js/levels.js"></script>
