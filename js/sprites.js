@@ -1,5 +1,5 @@
 /* ============================================
-   CodePetit - Hero + Goal SVG Generator
+   Chill Code - Hero + Goal SVG Generator
    3 heroes × 3 color presets × 4 directions
    ============================================ */
 

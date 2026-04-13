@@ -1,5 +1,5 @@
 /* ============================================
-   CodePetit - UI Controller
+   Chill Code - UI Controller
    Handles instruction palette, program editing,
    tap-to-add, and game screen interactions.
    ============================================ */
