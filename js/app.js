@@ -1,5 +1,5 @@
 /* ============================================
-   Chill Code - App Controller
+   CodePetit - App Controller
    Navigation, save system, progression.
    ============================================ */
 
@@ -463,7 +463,7 @@ const App = (() => {
   // ---- Save System ----
   function loadSave() {
     try {
-      const data = localStorage.getItem('chill_code_save');
+      const data = localStorage.getItem('codepetit_save');
       if (data) {
         const parsed = JSON.parse(data);
         save = { ...save, ...parsed };
@@ -475,7 +475,7 @@ const App = (() => {
 
   function saveToDisk() {
     try {
-      localStorage.setItem('chill_code_save', JSON.stringify(save));
+      localStorage.setItem('codepetit_save', JSON.stringify(save));
     } catch (e) {
       console.warn('Could not save:', e);
     }

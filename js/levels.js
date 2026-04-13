@@ -1,5 +1,5 @@
 /* ============================================
-   Chill Code - Level Data (160 levels)
+   CodePetit - Level Data (160 levels)
    8 worlds x 20 levels each
    ============================================ */
 

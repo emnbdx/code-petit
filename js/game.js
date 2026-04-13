@@ -1,5 +1,5 @@
 /* ============================================
-   Chill Code - Game Engine
+   CodePetit - Game Engine
    Handles grid rendering, hero movement,
    instruction execution, and game state.
    ============================================ */

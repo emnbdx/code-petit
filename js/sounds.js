@@ -1,5 +1,5 @@
 /* ============================================
-   Chill Code - Sound System (Web Audio API)
+   CodePetit - Sound System (Web Audio API)
    ============================================ */
 
 const Sounds = (() => {
