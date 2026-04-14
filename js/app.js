@@ -166,46 +166,89 @@ const App = (() => {
     const strip = document.getElementById('home-worlds-strip');
     strip.innerHTML = '';
 
-    WORLDS.forEach((world, idx) => {
-      const unlocked = isWorldUnlocked(world.id);
-      const progress = getWorldProgress(world.id);
-      const isCurrent = save.lastWorld === world.id;
+    const SPACING = 95;
+    const PAD     = 50;
+    const Y_TOP   = 65;
+    const Y_BOT   = 145;
+    const W       = PAD + (WORLDS.length - 1) * SPACING + PAD; // 765
+    const H       = 210;
 
-      // Node
+    const xPos = WORLDS.map((_, i) => PAD + i * SPACING);
+    const yPos = WORLDS.map((_, i) => i % 2 === 0 ? Y_TOP : Y_BOT);
+
+    // Inner container (sized to content, centered by margin:auto)
+    const inner = document.createElement('div');
+    inner.className = 'worlds-strip-inner';
+    inner.style.width = W + 'px';
+    inner.style.height = H + 'px';
+
+    // SVG path
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const svg   = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.classList.add('worlds-path-svg');
+    svg.style.width  = W + 'px';
+    svg.style.height = H + 'px';
+
+    // Build S-curve path through all nodes
+    let d = `M ${xPos[0]},${yPos[0]}`;
+    for (let i = 1; i < WORLDS.length; i++) {
+      const mx = (xPos[i - 1] + xPos[i]) / 2;
+      d += ` C ${mx},${yPos[i-1]} ${mx},${yPos[i]} ${xPos[i]},${yPos[i]}`;
+    }
+
+    const path = document.createElementNS(svgNS, 'path');
+    path.setAttribute('d', d);
+    path.setAttribute('stroke', 'rgba(0,0,0,0.1)');
+    path.setAttribute('stroke-width', '7');
+    path.setAttribute('stroke-linecap', 'round');
+    path.setAttribute('stroke-dasharray', '11 7');
+    path.setAttribute('fill', 'none');
+    svg.appendChild(path);
+    inner.appendChild(svg);
+
+    // World nodes (all visible, no lock state)
+    WORLDS.forEach((world, idx) => {
       const node = document.createElement('div');
-      node.className = 'home-world-node' + (isCurrent ? ' current' : '') + (unlocked ? '' : ' locked');
-      node.style.setProperty('--node-color', `var(--w${world.id})`);
+      node.className = 'home-world-node';
+      node.style.left = xPos[idx] + 'px';
+      node.style.top  = yPos[idx] + 'px';
 
       const circle = document.createElement('div');
       circle.className = 'home-world-circle';
       circle.style.background = `var(--w${world.id})`;
-      circle.textContent = unlocked ? world.icon : '🔒';
+      circle.textContent = world.icon;
 
       const label = document.createElement('div');
       label.className = 'home-world-label';
       label.textContent = I18n.t(world.nameKey);
 
-      if (unlocked) {
-        const prog = document.createElement('div');
-        prog.className = 'home-world-progress';
-        prog.textContent = progress.completed + '/20';
-        node.appendChild(circle);
-        node.appendChild(label);
-        node.appendChild(prog);
-      } else {
-        node.appendChild(circle);
-        node.appendChild(label);
-      }
-
-      strip.appendChild(node);
-
-      // Connector between nodes (not after the last one)
-      if (idx < WORLDS.length - 1) {
-        const connector = document.createElement('div');
-        connector.className = 'home-world-connector';
-        strip.appendChild(connector);
-      }
+      node.appendChild(circle);
+      node.appendChild(label);
+      inner.appendChild(node);
     });
+
+    // 3 heroes floating along the path
+    const heroSlots = [
+      { xIdx: 1.5, anim: 'anim-float',       defIdx: 0 },
+      { xIdx: 3.5, anim: 'anim-bounce-slow',  defIdx: 1 },
+      { xIdx: 5.5, anim: 'anim-wiggle',       defIdx: 2 },
+    ];
+    heroSlots.forEach(({ xIdx, anim, defIdx }) => {
+      const def    = Sprites.HERO_DEFS[defIdx];
+      const preset = def.id === heroSelectId ? heroSelectPreset : 0;
+      const hx     = PAD + xIdx * SPACING;
+      const hy     = (Y_TOP + Y_BOT) / 2;
+
+      const heroEl = document.createElement('div');
+      heroEl.className  = 'map-hero-float ' + anim;
+      heroEl.style.left = hx + 'px';
+      heroEl.style.top  = hy + 'px';
+      heroEl.innerHTML  = Sprites.getPreviewSVG(def.id, preset);
+      inner.appendChild(heroEl);
+    });
+
+    strip.appendChild(inner);
   }
 
   // ---- Hero Select Screen ----
