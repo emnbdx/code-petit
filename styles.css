@@ -254,6 +254,96 @@ html, body {
 }
 .color-dot:active { transform: scale(0.88); }
 
+/* World progression strip (home) */
+.world-strip {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  width: 100%;
+  padding: 14px 20px 6px;
+  gap: 0;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.world-strip::-webkit-scrollbar { display: none; }
+
+.world-strip-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 4px;
+  cursor: pointer;
+  position: relative;
+}
+.world-strip-node.locked { cursor: default; }
+
+.world-strip-connector {
+  width: 18px;
+  height: 4px;
+  flex-shrink: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(0,0,0,0.15) 0, rgba(0,0,0,0.15) 4px,
+    transparent 4px, transparent 8px
+  );
+  border-radius: 2px;
+  align-self: center;
+  margin-bottom: 18px; /* align with circle center */
+}
+
+.world-strip-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  border: 3px solid white;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.18);
+  background: var(--node-color, #cbd5e0);
+  transition: transform 0.15s;
+}
+.world-strip-node:not(.locked):active .world-strip-circle {
+  transform: scale(0.9);
+}
+.world-strip-node.locked .world-strip-circle {
+  background: #e2e8f0;
+  filter: grayscale(0.6);
+  opacity: 0.55;
+}
+.world-strip-node.current .world-strip-circle {
+  box-shadow: 0 0 0 3px white, 0 0 0 6px var(--node-color, #68d391),
+              0 4px 12px rgba(0,0,0,0.2);
+  animation: strip-pulse 1.8s ease-in-out infinite;
+}
+@keyframes strip-pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.08); }
+}
+
+.world-strip-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text);
+  text-align: center;
+  max-width: 58px;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.world-strip-node.locked .world-strip-label { opacity: 0.45; }
+
+.world-strip-stars {
+  font-size: 10px;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+.world-strip-star-on  { color: #ecc94b; }
+.world-strip-star-off { color: #e2e8f0; }
+
 /* Home actions */
 .home-actions {
   display: flex;

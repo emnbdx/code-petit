@@ -13,34 +13,35 @@ const App = (() => {
     hero: null,           // { id, preset }
   };
 
-  // Hero selection state (home showcase)
+  // Hero showcase state (home screen)
   let showcaseHeroIdx = 0;
-  let showcasePreset = 0;
+  let showcasePreset  = 0;
 
   let currentWorld = 1;
   let currentLevel = 1;
 
   // DOM refs
   const screens = {};
+  let worldsGrid, levelsGrid, levelsTitle;
   let victoryStars, victoryTitle, victoryMsg;
 
   function init() {
-    ['home', 'map', 'game'].forEach(id => {
+    ['home', 'worlds', 'levels', 'game'].forEach(id => {
       screens[id] = document.getElementById('screen-' + id);
     });
 
+    worldsGrid  = document.getElementById('worlds-grid');
+    levelsGrid  = document.getElementById('levels-grid');
+    levelsTitle = document.getElementById('levels-title');
     victoryStars = document.getElementById('victory-stars');
     victoryTitle = document.getElementById('victory-title');
     victoryMsg   = document.getElementById('victory-msg');
 
-    // Init subsystems
     Game.init();
     UI.init();
-
-    // Load save
     loadSave();
 
-    // Restore hero selection state from save
+    // Restore hero from save
     if (save.hero) {
       const idx = Sprites.HERO_DEFS.findIndex(d => d.id === save.hero.id);
       showcaseHeroIdx = idx >= 0 ? idx : 0;
@@ -48,15 +49,17 @@ const App = (() => {
     }
     applyHeroConfig();
 
-    // Navigation buttons
-    document.getElementById('btn-start').addEventListener('click', () => showScreen('map'));
+    // Navigation
+    document.getElementById('btn-start').addEventListener('click', () => showScreen('worlds'));
     document.getElementById('btn-continue').addEventListener('click', () => {
       loadAndPlayLevel(save.lastWorld, save.lastLevel);
     });
-    document.getElementById('btn-map-back').addEventListener('click', () => showScreen('home'));
+    document.getElementById('btn-worlds-back').addEventListener('click', () => showScreen('home'));
+    document.getElementById('btn-levels-back').addEventListener('click', () => showScreen('worlds'));
     document.getElementById('btn-game-back').addEventListener('click', () => {
       Game.stop();
-      showScreen('map');
+      showScreen('levels');
+      showLevels(currentWorld);
     });
 
     // Victory modal
@@ -87,6 +90,7 @@ const App = (() => {
       applyHeroConfig();
       updateHomeButtons();
       buildHomeShowcase();
+      buildWorldStrip();
     });
 
     // Language
@@ -98,13 +102,14 @@ const App = (() => {
       btn.addEventListener('click', () => {
         I18n.setLang(btn.dataset.lang);
         updateLangButtons();
-        // Rebuild map if visible (world names may have changed)
-        if (screens.map && screens.map.classList.contains('active')) buildMap();
+        if (screens.worlds && screens.worlds.classList.contains('active')) buildWorldsScreen();
+        if (screens.home   && screens.home.classList.contains('active'))   { buildHomeShowcase(); buildWorldStrip(); }
       });
     });
 
     updateHomeButtons();
     buildHomeShowcase();
+    buildWorldStrip();
     showScreen('home');
   }
 
@@ -136,7 +141,7 @@ const App = (() => {
   function updateHomeButtons() {
     const hasProgress = save.lastWorld > 1 || save.lastLevel > 1 ||
       Object.keys(save.stars).length > 0;
-    document.getElementById('btn-continue').style.display      = hasProgress ? '' : 'none';
+    document.getElementById('btn-continue').style.display       = hasProgress ? '' : 'none';
     document.getElementById('btn-reset-progress').style.display = hasProgress ? '' : 'none';
   }
 
@@ -144,8 +149,9 @@ const App = (() => {
     Object.values(screens).forEach(s => s && s.classList.remove('active'));
     if (screens[name]) screens[name].classList.add('active');
 
-    if (name === 'map')  buildMap();
-    if (name === 'home') { updateHomeButtons(); buildHomeShowcase(); }
+    if (name === 'worlds') buildWorldsScreen();
+    if (name === 'levels') showLevels(currentWorld);
+    if (name === 'home')   { updateHomeButtons(); buildHomeShowcase(); buildWorldStrip(); }
   }
 
   // ---- Home Hero Showcase ----
@@ -161,7 +167,6 @@ const App = (() => {
 
       const wrap = document.createElement('div');
       wrap.className = 'showcase-hero-wrap';
-      // initHero injects all 4 direction SVGs; CSS shows only data-dir-svg="2" (front)
       Sprites.initHero(wrap, def.id, idx === showcaseHeroIdx ? showcasePreset : 0);
 
       const name = document.createElement('div');
@@ -172,7 +177,7 @@ const App = (() => {
       slot.appendChild(name);
 
       slot.addEventListener('click', () => {
-        if (idx === showcaseHeroIdx) return; // already selected
+        if (idx === showcaseHeroIdx) return;
         showcaseHeroIdx = idx;
         showcasePreset  = 0;
         saveHeroChoice();
@@ -188,8 +193,8 @@ const App = (() => {
       def.presets.forEach((preset, idx) => {
         const dot = document.createElement('div');
         dot.className = 'color-dot' + (idx === showcasePreset ? ' active' : '');
-        dot.style.background   = preset.p;
-        dot.style.borderColor  = preset.pd;
+        dot.style.background  = preset.p;
+        dot.style.borderColor = preset.pd;
         dot.title = I18n.t(preset.nameKey);
 
         dot.addEventListener('click', () => {
@@ -204,6 +209,75 @@ const App = (() => {
     }
   }
 
+  // ---- World Progression Strip (home) ----
+  function buildWorldStrip() {
+    const strip = document.getElementById('world-strip');
+    strip.innerHTML = '';
+
+    const unlockedLevel = save.unlocked;
+    let currentNodeEl = null;
+
+    WORLDS.forEach((world, idx) => {
+      // Connector between worlds
+      if (idx > 0) {
+        const conn = document.createElement('div');
+        conn.className = 'world-strip-connector';
+        strip.appendChild(conn);
+      }
+
+      const unlocked = isWorldUnlocked(world.id);
+      const progress = getWorldProgress(world.id);
+      const isCurrent = unlocked && getWorldProgress(world.id + 1).completed === 0 &&
+                        (world.id === 8 || !isWorldUnlocked(world.id + 1));
+
+      // World color CSS variable value
+      const colorVal = getComputedStyle(document.documentElement)
+        .getPropertyValue('--w' + world.id).trim();
+
+      const node = document.createElement('div');
+      node.className = 'world-strip-node' +
+        (unlocked ? '' : ' locked') +
+        (isCurrent ? ' current' : '');
+      node.style.setProperty('--node-color', `var(--w${world.id})`);
+
+      // Stars for this world
+      let starsHTML = '';
+      if (unlocked) {
+        const maxStars = progress.completed * 3;
+        const earned   = Math.min(progress.totalStars, maxStars);
+        // Show filled/empty as ratio out of 3 dots
+        const filledDots = progress.completed > 0 ? Math.round((progress.totalStars / (progress.completed * 3)) * 3) : 0;
+        for (let s = 0; s < 3; s++) {
+          starsHTML += `<span class="${s < filledDots ? 'world-strip-star-on' : 'world-strip-star-off'}">\u2605</span>`;
+        }
+      }
+
+      node.innerHTML = `
+        <div class="world-strip-circle">${unlocked ? world.icon : '\uD83D\uDD12'}</div>
+        <div class="world-strip-label">${I18n.t(world.nameKey)}</div>
+        <div class="world-strip-stars">${starsHTML}</div>
+      `;
+
+      if (unlocked) {
+        node.addEventListener('click', () => {
+          currentWorld = world.id;
+          setWorldTheme(world.id);
+          showScreen('levels');
+        });
+      }
+
+      if (isCurrent) currentNodeEl = node;
+      strip.appendChild(node);
+    });
+
+    // Scroll current world into view
+    if (currentNodeEl) {
+      setTimeout(() => {
+        currentNodeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }, 100);
+    }
+  }
+
   function setWorldTheme(worldId) {
     const root = document.documentElement;
     root.style.setProperty('--world-color', `var(--w${worldId})`);
@@ -211,107 +285,39 @@ const App = (() => {
     root.style.setProperty('--world-dark',  `var(--w${worldId}-dark)`);
   }
 
-  // ---- Map Screen ----
-  function buildMap() {
-    const mapScroll = document.getElementById('map-scroll');
-    mapScroll.innerHTML = '';
-
-    let currentNodeEl = null;
+  // ---- Worlds Screen ----
+  function buildWorldsScreen() {
+    worldsGrid.innerHTML = '';
 
     WORLDS.forEach(world => {
-      const worldUnlocked = isWorldUnlocked(world.id);
-      const progress      = getWorldProgress(world.id);
+      const unlocked = isWorldUnlocked(world.id);
+      const progress = getWorldProgress(world.id);
 
-      const worldEl = document.createElement('div');
-      worldEl.className = 'map-world' + (worldUnlocked ? '' : ' world-locked');
+      const card = document.createElement('div');
+      card.className = 'world-card' + (unlocked ? '' : ' locked');
+      card.style.setProperty('--card-color', `var(--w${world.id})`);
+      card.style.setProperty('--card-light', `var(--w${world.id}-light)`);
 
-      // World header
-      const header = document.createElement('div');
-      header.className = 'map-world-header';
-      header.innerHTML = `
-        <div class="map-world-icon">${world.icon}</div>
-        <div class="map-world-info">
-          <div class="map-world-name">${I18n.t(world.nameKey)}</div>
-          <div class="map-world-desc">${I18n.t(world.descKey)}</div>
-          <div class="map-world-progress">${worldUnlocked ? progress.completed + '/20' : '\uD83D\uDD12'}</div>
+      card.innerHTML = `
+        <div class="world-card-icon">${world.icon}</div>
+        <div class="world-card-info">
+          <div class="world-card-name">${I18n.t(world.nameKey)}</div>
+          <div class="world-card-desc">${I18n.t(world.descKey)}</div>
+          <div class="world-card-progress">${unlocked ? progress.completed + '/20' : ''}</div>
         </div>
+        ${unlocked ? '' : '<div class="world-card-lock">&#128274;</div>'}
       `;
-      worldEl.appendChild(header);
 
-      if (!worldUnlocked) {
-        mapScroll.appendChild(worldEl);
-        return;
+      if (unlocked) {
+        card.addEventListener('click', () => {
+          currentWorld = world.id;
+          setWorldTheme(world.id);
+          showScreen('levels');
+        });
       }
 
-      // Build snake path: 5 rows of 4 nodes = 20 levels
-      const pathEl   = document.createElement('div');
-      pathEl.className = 'map-path';
-
-      const unlockedLevel = save.unlocked[world.id] || 1;
-
-      for (let row = 0; row < 5; row++) {
-        // Bend connector between rows
-        if (row > 0) {
-          const bend = document.createElement('div');
-          bend.className = 'map-bend ' + (row % 2 === 1 ? 'bend-left' : 'bend-right');
-          pathEl.appendChild(bend);
-        }
-
-        const rowEl = document.createElement('div');
-        rowEl.className = 'map-row' + (row % 2 === 1 ? ' reverse' : '');
-
-        for (let col = 0; col < 4; col++) {
-          const levelNum   = row * 4 + col + 1;
-          const key        = world.id + '-' + levelNum;
-          const earned     = save.stars[key] || 0;
-          const isCompleted = earned > 0;
-          const isUnlocked  = levelNum <= unlockedLevel;
-          const isCurrent   = levelNum === unlockedLevel && !isCompleted;
-
-          const nodeEl = document.createElement('div');
-          nodeEl.className = 'map-node' +
-            (isCompleted ? ' done'    : '') +
-            (isCurrent   ? ' current' : '') +
-            (!isUnlocked ? ' locked'  : '');
-
-          let starsHTML = '';
-          for (let s = 1; s <= 3; s++) {
-            starsHTML += `<span class="${s <= earned ? 'map-star-on' : 'map-star-off'}">\u2605</span>`;
-          }
-
-          const circle = document.createElement('div');
-          circle.className = 'map-node-circle';
-          circle.textContent = isUnlocked ? levelNum : '\uD83D\uDD12';
-
-          const stars = document.createElement('div');
-          stars.className = 'map-node-stars';
-          stars.innerHTML = starsHTML;
-
-          nodeEl.appendChild(circle);
-          nodeEl.appendChild(stars);
-
-          if (isUnlocked) {
-            nodeEl.addEventListener('click', () => loadAndPlayLevel(world.id, levelNum));
-          }
-
-          if (isCurrent) currentNodeEl = nodeEl;
-
-          rowEl.appendChild(nodeEl);
-        }
-
-        pathEl.appendChild(rowEl);
-      }
-
-      worldEl.appendChild(pathEl);
-      mapScroll.appendChild(worldEl);
+      worldsGrid.appendChild(card);
     });
-
-    // Scroll to current level node
-    if (currentNodeEl) {
-      setTimeout(() => {
-        currentNodeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 120);
-    }
   }
 
   function isWorldUnlocked(worldId) {
@@ -326,6 +332,48 @@ const App = (() => {
       if (save.stars[key]) { completed++; totalStars += save.stars[key]; }
     }
     return { completed, totalStars };
+  }
+
+  // ---- Levels Screen ----
+  function showLevels(worldId) {
+    setWorldTheme(worldId);
+    const world = WORLDS.find(w => w.id === worldId);
+    levelsTitle.textContent = world ? I18n.t(world.nameKey) : I18n.t('worlds_title') + ' ' + worldId;
+
+    levelsGrid.innerHTML = '';
+
+    const unlockedLevel = save.unlocked[worldId] || 1;
+
+    for (let l = 1; l <= 20; l++) {
+      const btn = document.createElement('button');
+      const key = worldId + '-' + l;
+      const earned     = save.stars[key] || 0;
+      const isUnlocked = l <= unlockedLevel || isWorldFullyUnlocked(worldId);
+      const isCompleted = earned > 0;
+      const isCurrent   = l === unlockedLevel && !isCompleted;
+
+      btn.className = 'level-btn' +
+        (isCompleted ? ' completed' : '') +
+        (isCurrent   ? ' current'   : '') +
+        (!isUnlocked ? ' locked'    : '');
+
+      let starsHTML = '';
+      for (let s = 1; s <= 3; s++) {
+        starsHTML += `<span class="level-star ${s <= earned ? 'earned' : ''}">\u2605</span>`;
+      }
+
+      btn.innerHTML = `${l}<div class="level-stars">${starsHTML}</div>`;
+
+      if (isUnlocked) {
+        btn.addEventListener('click', () => loadAndPlayLevel(worldId, l));
+      }
+
+      levelsGrid.appendChild(btn);
+    }
+  }
+
+  function isWorldFullyUnlocked(worldId) {
+    return (save.unlocked[worldId] || 1) > 20;
   }
 
   // ---- Game ----
@@ -365,7 +413,6 @@ const App = (() => {
     display.innerHTML = html;
   }
 
-  // Called by UI when level is completed
   function onLevelComplete(result) {
     const key       = currentWorld + '-' + currentLevel;
     const prevStars = save.stars[key] || 0;
@@ -425,10 +472,14 @@ const App = (() => {
   function goToNextLevel() {
     if (currentLevel < 20) {
       loadAndPlayLevel(currentWorld, currentLevel + 1);
-    } else if (currentWorld < 8 && isWorldUnlocked(currentWorld + 1)) {
-      loadAndPlayLevel(currentWorld + 1, 1);
+    } else if (currentWorld < 8) {
+      if (isWorldUnlocked(currentWorld + 1)) {
+        loadAndPlayLevel(currentWorld + 1, 1);
+      } else {
+        showScreen('worlds');
+      }
     } else {
-      showScreen('map');
+      showScreen('worlds');
     }
   }
 

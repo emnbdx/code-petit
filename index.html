@@ -30,7 +30,12 @@
 
     <!-- Color picker for selected hero -->
     <div class="showcase-colors" id="showcase-colors">
-      <!-- Filled by JS: 3 color dots -->
+      <!-- Filled by JS: color dots -->
+    </div>
+
+    <!-- World progression strip -->
+    <div class="world-strip" id="world-strip">
+      <!-- Filled by JS -->
     </div>
 
     <!-- CTA buttons -->
@@ -58,14 +63,26 @@
     </div>
   </div>
 
-  <!-- MAP SCREEN (replaces worlds + levels) -->
-  <div id="screen-map" class="screen">
-    <div class="map-header">
-      <button class="btn-back" id="btn-map-back" aria-label="Back">&#9664;</button>
+  <!-- WORLD SELECT SCREEN -->
+  <div id="screen-worlds" class="screen">
+    <div class="screen-header">
+      <button class="btn-back" id="btn-worlds-back" aria-label="Back">&#9664;</button>
       <h2 class="screen-title" data-i18n="worlds_title">Worlds</h2>
       <div class="spacer"></div>
     </div>
-    <div class="map-scroll" id="map-scroll">
+    <div class="worlds-grid" id="worlds-grid">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+
+  <!-- LEVEL SELECT SCREEN -->
+  <div id="screen-levels" class="screen">
+    <div class="screen-header">
+      <button class="btn-back" id="btn-levels-back" aria-label="Back">&#9664;</button>
+      <h2 class="screen-title" id="levels-title">World 1</h2>
+      <div class="spacer"></div>
+    </div>
+    <div class="levels-grid" id="levels-grid">
       <!-- Filled by JS -->
     </div>
   </div>
