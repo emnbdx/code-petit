@@ -10,33 +10,28 @@ const App = (() => {
     stars: {},            // "w-l": stars earned (1-3)
     lastWorld: 1,
     lastLevel: 1,
-    hero: null,           // { id, preset } — null means not chosen yet
+    hero: null,           // { id, preset }
   };
 
-  // Hero selection state
-  let heroSelectId = 'bird';
-  let heroSelectPreset = 0;
+  // Hero selection state (home showcase)
+  let showcaseHeroIdx = 0;
+  let showcasePreset = 0;
 
   let currentWorld = 1;
   let currentLevel = 1;
 
   // DOM refs
   const screens = {};
-  let worldsGrid, levelsGrid, levelsTitle;
   let victoryStars, victoryTitle, victoryMsg;
 
   function init() {
-    // Cache screens
-    ['home', 'worlds', 'levels', 'game', 'hero'].forEach(id => {
+    ['home', 'map', 'game'].forEach(id => {
       screens[id] = document.getElementById('screen-' + id);
     });
 
-    worldsGrid = document.getElementById('worlds-grid');
-    levelsGrid = document.getElementById('levels-grid');
-    levelsTitle = document.getElementById('levels-title');
     victoryStars = document.getElementById('victory-stars');
     victoryTitle = document.getElementById('victory-title');
-    victoryMsg = document.getElementById('victory-msg');
+    victoryMsg   = document.getElementById('victory-msg');
 
     // Init subsystems
     Game.init();
@@ -45,24 +40,23 @@ const App = (() => {
     // Load save
     loadSave();
 
+    // Restore hero selection state from save
+    if (save.hero) {
+      const idx = Sprites.HERO_DEFS.findIndex(d => d.id === save.hero.id);
+      showcaseHeroIdx = idx >= 0 ? idx : 0;
+      showcasePreset  = save.hero.preset || 0;
+    }
+    applyHeroConfig();
+
     // Navigation buttons
-    document.getElementById('btn-start').addEventListener('click', () => {
-      if (!save.hero) {
-        showScreen('hero');
-      } else {
-        showScreen('worlds');
-      }
-    });
+    document.getElementById('btn-start').addEventListener('click', () => showScreen('map'));
     document.getElementById('btn-continue').addEventListener('click', () => {
       loadAndPlayLevel(save.lastWorld, save.lastLevel);
     });
-    document.getElementById('btn-hero-change').addEventListener('click', () => showScreen('hero'));
-    document.getElementById('btn-worlds-back').addEventListener('click', () => showScreen('home'));
-    document.getElementById('btn-levels-back').addEventListener('click', () => showScreen('worlds'));
+    document.getElementById('btn-map-back').addEventListener('click', () => showScreen('home'));
     document.getElementById('btn-game-back').addEventListener('click', () => {
       Game.stop();
-      showScreen('levels');
-      showLevels(currentWorld);
+      showScreen('map');
     });
 
     // Victory modal
@@ -82,60 +76,53 @@ const App = (() => {
       Game.resetLevel();
     });
 
-    // Hero confirm button
-    document.getElementById('btn-hero-confirm').addEventListener('click', () => {
-      save.hero = { id: heroSelectId, preset: heroSelectPreset };
-      saveToDisk();
-      applyHeroConfig();
-      updateHomeButtons();
-      showScreen('worlds');
-    });
-
     // Reset progress
-    document.getElementById('btn-reset-progress').addEventListener('click', () => {
-      showModal('modal-reset');
-    });
-    document.getElementById('btn-reset-cancel').addEventListener('click', () => {
-      hideModal('modal-reset');
-    });
+    document.getElementById('btn-reset-progress').addEventListener('click', () => showModal('modal-reset'));
+    document.getElementById('btn-reset-cancel').addEventListener('click', () => hideModal('modal-reset'));
     document.getElementById('btn-reset-confirm').addEventListener('click', () => {
       hideModal('modal-reset');
       resetSave();
+      showcaseHeroIdx = 0;
+      showcasePreset  = 0;
+      applyHeroConfig();
       updateHomeButtons();
+      buildHomeShowcase();
     });
 
-    // Detect language and apply i18n
+    // Language
     I18n.detect();
     I18n.applyAll();
     updateLangButtons();
 
-    // Language switcher
     document.querySelectorAll('.lang-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         I18n.setLang(btn.dataset.lang);
         updateLangButtons();
-        if (screens.worlds && screens.worlds.classList.contains('active')) buildWorldsScreen();
-        if (screens.hero && screens.hero.classList.contains('active')) buildHeroScreen();
+        // Rebuild map if visible (world names may have changed)
+        if (screens.map && screens.map.classList.contains('active')) buildMap();
       });
     });
 
-    // Apply saved hero config
-    if (save.hero) {
-      heroSelectId = save.hero.id;
-      heroSelectPreset = save.hero.preset;
-      applyHeroConfig();
-    }
-
-    // Show continue / reset buttons if there's progress
     updateHomeButtons();
-
-    // Show home
+    buildHomeShowcase();
     showScreen('home');
   }
 
   function applyHeroConfig() {
-    Sprites.setHeroConfig(heroSelectId, heroSelectPreset);
-    Game.refreshHero();
+    const def = Sprites.HERO_DEFS[showcaseHeroIdx];
+    if (def) {
+      Sprites.setHeroConfig(def.id, showcasePreset);
+      Game.refreshHero();
+    }
+  }
+
+  function saveHeroChoice() {
+    const def = Sprites.HERO_DEFS[showcaseHeroIdx];
+    if (def) {
+      save.hero = { id: def.id, preset: showcasePreset };
+      saveToDisk();
+      applyHeroConfig();
+    }
   }
 
   function updateLangButtons() {
@@ -149,192 +136,196 @@ const App = (() => {
   function updateHomeButtons() {
     const hasProgress = save.lastWorld > 1 || save.lastLevel > 1 ||
       Object.keys(save.stars).length > 0;
-    const hasHero = !!save.hero;
-    document.getElementById('btn-continue').style.display = hasProgress ? '' : 'none';
+    document.getElementById('btn-continue').style.display      = hasProgress ? '' : 'none';
     document.getElementById('btn-reset-progress').style.display = hasProgress ? '' : 'none';
-    document.getElementById('btn-hero-change').style.display = hasHero ? '' : 'none';
   }
 
   function showScreen(name) {
-    Object.values(screens).forEach(s => s.classList.remove('active'));
-    screens[name].classList.add('active');
+    Object.values(screens).forEach(s => s && s.classList.remove('active'));
+    if (screens[name]) screens[name].classList.add('active');
 
-    if (name === 'worlds') buildWorldsScreen();
-    if (name === 'levels') showLevels(currentWorld);
-    if (name === 'home') updateHomeButtons();
-    if (name === 'hero') buildHeroScreen();
+    if (name === 'map')  buildMap();
+    if (name === 'home') { updateHomeButtons(); buildHomeShowcase(); }
   }
 
-  // ---- Hero Select Screen ----
-  function buildHeroScreen() {
-    // Initialize from current save
-    heroSelectId = save.hero ? save.hero.id : 'bird';
-    heroSelectPreset = save.hero ? save.hero.preset : 0;
+  // ---- Home Hero Showcase ----
+  function buildHomeShowcase() {
+    const showcaseEl = document.getElementById('hero-showcase');
+    const colorsEl   = document.getElementById('showcase-colors');
+    showcaseEl.innerHTML = '';
+    colorsEl.innerHTML   = '';
 
-    renderHeroCards();
-    renderColorSwatches();
-  }
+    Sprites.HERO_DEFS.forEach((def, idx) => {
+      const slot = document.createElement('div');
+      slot.className = 'showcase-slot' + (idx === showcaseHeroIdx ? ' active' : '');
 
-  function renderHeroCards() {
-    const container = document.getElementById('hero-cards');
-    container.innerHTML = '';
+      const wrap = document.createElement('div');
+      wrap.className = 'showcase-hero-wrap';
+      // initHero injects all 4 direction SVGs; CSS shows only data-dir-svg="2" (front)
+      Sprites.initHero(wrap, def.id, idx === showcaseHeroIdx ? showcasePreset : 0);
 
-    Sprites.HERO_DEFS.forEach(def => {
-      const card = document.createElement('div');
-      card.className = 'hero-card' + (def.id === heroSelectId ? ' selected' : '');
-      card.dataset.heroId = def.id;
+      const name = document.createElement('div');
+      name.className = 'showcase-name';
+      name.textContent = def.name;
 
-      // Preview SVG with current preset for this hero
-      const presetIdx = def.id === heroSelectId ? heroSelectPreset : 0;
-      const previewSVG = Sprites.getPreviewSVG(def.id, presetIdx);
+      slot.appendChild(wrap);
+      slot.appendChild(name);
 
-      card.innerHTML = `
-        <div class="hero-card-preview">${previewSVG}</div>
-        <div class="hero-card-name">${def.name}</div>
-      `;
-
-      card.addEventListener('click', () => {
-        heroSelectId = def.id;
-        heroSelectPreset = 0;
-        renderHeroCards();
-        renderColorSwatches();
+      slot.addEventListener('click', () => {
+        if (idx === showcaseHeroIdx) return; // already selected
+        showcaseHeroIdx = idx;
+        showcasePreset  = 0;
+        saveHeroChoice();
+        buildHomeShowcase();
       });
 
-      container.appendChild(card);
+      showcaseEl.appendChild(slot);
     });
-  }
 
-  function renderColorSwatches() {
-    const container = document.getElementById('hero-color-swatches');
-    container.innerHTML = '';
+    // Color dots for the selected hero
+    const def = Sprites.HERO_DEFS[showcaseHeroIdx];
+    if (def) {
+      def.presets.forEach((preset, idx) => {
+        const dot = document.createElement('div');
+        dot.className = 'color-dot' + (idx === showcasePreset ? ' active' : '');
+        dot.style.background   = preset.p;
+        dot.style.borderColor  = preset.pd;
+        dot.title = I18n.t(preset.nameKey);
 
-    const def = Sprites.getHeroDef(heroSelectId);
+        dot.addEventListener('click', () => {
+          if (idx === showcasePreset) return;
+          showcasePreset = idx;
+          saveHeroChoice();
+          buildHomeShowcase();
+        });
 
-    def.presets.forEach((preset, idx) => {
-      const swatch = document.createElement('div');
-      swatch.className = 'hero-color-swatch' + (idx === heroSelectPreset ? ' selected' : '');
-
-      const previewSVG = Sprites.getPreviewSVG(heroSelectId, idx);
-
-      swatch.innerHTML = `
-        <div class="swatch-preview">${previewSVG}</div>
-        <div class="swatch-name">${I18n.t(preset.nameKey)}</div>
-      `;
-
-      swatch.addEventListener('click', () => {
-        heroSelectPreset = idx;
-        renderColorSwatches();
-        // Update hero card preview with new color
-        renderHeroCards();
+        colorsEl.appendChild(dot);
       });
-
-      container.appendChild(swatch);
-    });
+    }
   }
 
   function setWorldTheme(worldId) {
     const root = document.documentElement;
     root.style.setProperty('--world-color', `var(--w${worldId})`);
     root.style.setProperty('--world-light', `var(--w${worldId}-light)`);
-    root.style.setProperty('--world-dark', `var(--w${worldId}-dark)`);
+    root.style.setProperty('--world-dark',  `var(--w${worldId}-dark)`);
   }
 
-  // ---- Worlds Screen ----
-  function buildWorldsScreen() {
-    worldsGrid.innerHTML = '';
+  // ---- Map Screen ----
+  function buildMap() {
+    const mapScroll = document.getElementById('map-scroll');
+    mapScroll.innerHTML = '';
+
+    let currentNodeEl = null;
 
     WORLDS.forEach(world => {
-      const unlocked = isWorldUnlocked(world.id);
-      const progress = getWorldProgress(world.id);
+      const worldUnlocked = isWorldUnlocked(world.id);
+      const progress      = getWorldProgress(world.id);
 
-      const card = document.createElement('div');
-      card.className = 'world-card' + (unlocked ? '' : ' locked');
-      card.style.setProperty('--card-color', `var(--w${world.id})`);
-      card.style.setProperty('--card-light', `var(--w${world.id}-light)`);
+      const worldEl = document.createElement('div');
+      worldEl.className = 'map-world' + (worldUnlocked ? '' : ' world-locked');
 
-      card.innerHTML = `
-        <div class="world-card-icon">${world.icon}</div>
-        <div class="world-card-info">
-          <div class="world-card-name">${I18n.t(world.nameKey)}</div>
-          <div class="world-card-desc">${I18n.t(world.descKey)}</div>
-          <div class="world-card-progress">${unlocked ? progress.completed + '/20' : ''}</div>
+      // World header
+      const header = document.createElement('div');
+      header.className = 'map-world-header';
+      header.innerHTML = `
+        <div class="map-world-icon">${world.icon}</div>
+        <div class="map-world-info">
+          <div class="map-world-name">${I18n.t(world.nameKey)}</div>
+          <div class="map-world-desc">${I18n.t(world.descKey)}</div>
+          <div class="map-world-progress">${worldUnlocked ? progress.completed + '/20' : '\uD83D\uDD12'}</div>
         </div>
-        ${unlocked ? '' : '<div class="world-card-lock">&#128274;</div>'}
       `;
+      worldEl.appendChild(header);
 
-      if (unlocked) {
-        card.addEventListener('click', () => {
-          currentWorld = world.id;
-          setWorldTheme(world.id);
-          showScreen('levels');
-        });
+      if (!worldUnlocked) {
+        mapScroll.appendChild(worldEl);
+        return;
       }
 
-      worldsGrid.appendChild(card);
+      // Build snake path: 5 rows of 4 nodes = 20 levels
+      const pathEl   = document.createElement('div');
+      pathEl.className = 'map-path';
+
+      const unlockedLevel = save.unlocked[world.id] || 1;
+
+      for (let row = 0; row < 5; row++) {
+        // Bend connector between rows
+        if (row > 0) {
+          const bend = document.createElement('div');
+          bend.className = 'map-bend ' + (row % 2 === 1 ? 'bend-left' : 'bend-right');
+          pathEl.appendChild(bend);
+        }
+
+        const rowEl = document.createElement('div');
+        rowEl.className = 'map-row' + (row % 2 === 1 ? ' reverse' : '');
+
+        for (let col = 0; col < 4; col++) {
+          const levelNum   = row * 4 + col + 1;
+          const key        = world.id + '-' + levelNum;
+          const earned     = save.stars[key] || 0;
+          const isCompleted = earned > 0;
+          const isUnlocked  = levelNum <= unlockedLevel;
+          const isCurrent   = levelNum === unlockedLevel && !isCompleted;
+
+          const nodeEl = document.createElement('div');
+          nodeEl.className = 'map-node' +
+            (isCompleted ? ' done'    : '') +
+            (isCurrent   ? ' current' : '') +
+            (!isUnlocked ? ' locked'  : '');
+
+          let starsHTML = '';
+          for (let s = 1; s <= 3; s++) {
+            starsHTML += `<span class="${s <= earned ? 'map-star-on' : 'map-star-off'}">\u2605</span>`;
+          }
+
+          const circle = document.createElement('div');
+          circle.className = 'map-node-circle';
+          circle.textContent = isUnlocked ? levelNum : '\uD83D\uDD12';
+
+          const stars = document.createElement('div');
+          stars.className = 'map-node-stars';
+          stars.innerHTML = starsHTML;
+
+          nodeEl.appendChild(circle);
+          nodeEl.appendChild(stars);
+
+          if (isUnlocked) {
+            nodeEl.addEventListener('click', () => loadAndPlayLevel(world.id, levelNum));
+          }
+
+          if (isCurrent) currentNodeEl = nodeEl;
+
+          rowEl.appendChild(nodeEl);
+        }
+
+        pathEl.appendChild(rowEl);
+      }
+
+      worldEl.appendChild(pathEl);
+      mapScroll.appendChild(worldEl);
     });
+
+    // Scroll to current level node
+    if (currentNodeEl) {
+      setTimeout(() => {
+        currentNodeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 120);
+    }
   }
 
   function isWorldUnlocked(worldId) {
     if (worldId === 1) return true;
-    // A world is unlocked if the previous world has at least 10 levels completed
-    const prevProgress = getWorldProgress(worldId - 1);
-    return prevProgress.completed >= 10;
+    return getWorldProgress(worldId - 1).completed >= 10;
   }
 
   function getWorldProgress(worldId) {
-    let completed = 0;
-    let totalStars = 0;
+    let completed = 0, totalStars = 0;
     for (let l = 1; l <= 20; l++) {
       const key = worldId + '-' + l;
-      if (save.stars[key]) {
-        completed++;
-        totalStars += save.stars[key];
-      }
+      if (save.stars[key]) { completed++; totalStars += save.stars[key]; }
     }
     return { completed, totalStars };
-  }
-
-  // ---- Levels Screen ----
-  function showLevels(worldId) {
-    setWorldTheme(worldId);
-    const world = WORLDS.find(w => w.id === worldId);
-    levelsTitle.textContent = world ? I18n.t(world.nameKey) : I18n.t('worlds_title') + ' ' + worldId;
-
-    levelsGrid.innerHTML = '';
-
-    const unlockedLevel = save.unlocked[worldId] || 1;
-
-    for (let l = 1; l <= 20; l++) {
-      const btn = document.createElement('button');
-      const key = worldId + '-' + l;
-      const earned = save.stars[key] || 0;
-      const isUnlocked = l <= unlockedLevel || isWorldFullyUnlocked(worldId);
-      const isCompleted = earned > 0;
-      const isCurrent = l === unlockedLevel && !isCompleted;
-
-      btn.className = 'level-btn' +
-        (isCompleted ? ' completed' : '') +
-        (isCurrent ? ' current' : '') +
-        (!isUnlocked ? ' locked' : '');
-
-      let starsHTML = '';
-      for (let s = 1; s <= 3; s++) {
-        starsHTML += `<span class="level-star ${s <= earned ? 'earned' : ''}">\u2605</span>`;
-      }
-
-      btn.innerHTML = `${l}<div class="level-stars">${starsHTML}</div>`;
-
-      if (isUnlocked) {
-        btn.addEventListener('click', () => loadAndPlayLevel(worldId, l));
-      }
-
-      levelsGrid.appendChild(btn);
-    }
-  }
-
-  function isWorldFullyUnlocked(worldId) {
-    // If you've completed level 20, all levels are unlocked
-    return (save.unlocked[worldId] || 1) > 20;
   }
 
   // ---- Game ----
@@ -348,29 +339,23 @@ const App = (() => {
 
     showScreen('game');
 
-    // Update header
     const world = WORLDS.find(w => w.id === worldId);
     document.getElementById('game-world-name').textContent = world ? I18n.t(world.nameKey) : '';
-    document.getElementById('game-level-num').textContent = 'Niveau ' + levelNum;
+    document.getElementById('game-level-num').textContent  = 'Level ' + levelNum;
 
-    // Load level in game engine
-    // Use requestAnimationFrame to ensure layout is computed
     requestAnimationFrame(() => {
       Game.loadLevel(worldId, levelNum);
       UI.setupLevel(level);
-
-      // Update stars display
       updateStarsDisplay();
     });
 
-    // Save last played
     save.lastWorld = worldId;
     save.lastLevel = levelNum;
     saveToDisk();
   }
 
   function updateStarsDisplay() {
-    const key = currentWorld + '-' + currentLevel;
+    const key    = currentWorld + '-' + currentLevel;
     const earned = save.stars[key] || 0;
     const display = document.getElementById('game-stars-display');
     let html = '';
@@ -382,29 +367,20 @@ const App = (() => {
 
   // Called by UI when level is completed
   function onLevelComplete(result) {
-    const key = currentWorld + '-' + currentLevel;
+    const key       = currentWorld + '-' + currentLevel;
     const prevStars = save.stars[key] || 0;
 
-    // Update stars (keep best)
-    if (result.stars > prevStars) {
-      save.stars[key] = result.stars;
-    }
+    if (result.stars > prevStars) save.stars[key] = result.stars;
 
-    // Unlock next level
     if (!save.unlocked[currentWorld] || currentLevel >= save.unlocked[currentWorld]) {
       save.unlocked[currentWorld] = currentLevel + 1;
     }
 
-    // Check if new world should unlock
     for (let w = 1; w <= 8; w++) {
-      if (!save.unlocked[w] && isWorldUnlocked(w)) {
-        save.unlocked[w] = 1;
-      }
+      if (!save.unlocked[w] && isWorldUnlocked(w)) save.unlocked[w] = 1;
     }
 
     saveToDisk();
-
-    // Show victory modal
     showVictoryModal(result);
   }
 
@@ -418,44 +394,30 @@ const App = (() => {
         msg = I18n.t('fail_msg_stars');
       }
     }
-
     document.getElementById('fail-msg').textContent = msg;
     showModal('modal-fail');
   }
 
   function showVictoryModal(result) {
-    // Stars animation
     let starsHTML = '';
     for (let s = 1; s <= 3; s++) {
       starsHTML += `<span class="victory-star ${s <= result.stars ? 'earned' : 'empty'}">\u2605</span>`;
     }
     victoryStars.innerHTML = starsHTML;
 
-    // Title
     const titles = ['victory_title_1','victory_title_2','victory_title_3','victory_title_4','victory_title_5'];
     victoryTitle.textContent = I18n.t(titles[Math.floor(Math.random() * titles.length)]);
 
-    // Message
-    let msg = '';
-    if (result.stars === 3) {
-      msg = I18n.t('victory_perfect');
-    } else if (result.stars === 2) {
-      msg = I18n.t('victory_good');
-    } else {
-      msg = I18n.t('victory_ok');
-    }
-    if (result.actions) {
-      msg += ' ' + I18n.t('victory_actions', result.actions);
-    }
+    let msg = result.stars === 3 ? I18n.t('victory_perfect')
+            : result.stars === 2 ? I18n.t('victory_good')
+            : I18n.t('victory_ok');
+    if (result.actions) msg += ' ' + I18n.t('victory_actions', result.actions);
     victoryMsg.textContent = msg;
 
-    // Hide next button on last level of last world
     const btnNext = document.getElementById('btn-next');
-    if (currentWorld === 8 && currentLevel === 20) {
-      btnNext.textContent = I18n.t('btn_finish');
-    } else {
-      btnNext.textContent = I18n.t('btn_next');
-    }
+    btnNext.textContent = (currentWorld === 8 && currentLevel === 20)
+      ? I18n.t('btn_finish')
+      : I18n.t('btn_next');
 
     showModal('modal-victory');
   }
@@ -463,63 +425,37 @@ const App = (() => {
   function goToNextLevel() {
     if (currentLevel < 20) {
       loadAndPlayLevel(currentWorld, currentLevel + 1);
-    } else if (currentWorld < 8) {
-      // Go to next world
-      if (isWorldUnlocked(currentWorld + 1)) {
-        loadAndPlayLevel(currentWorld + 1, 1);
-      } else {
-        showScreen('worlds');
-      }
+    } else if (currentWorld < 8 && isWorldUnlocked(currentWorld + 1)) {
+      loadAndPlayLevel(currentWorld + 1, 1);
     } else {
-      showScreen('worlds');
+      showScreen('map');
     }
   }
 
-  function showModal(id) {
-    document.getElementById(id).style.display = '';
-  }
-
-  function hideModal(id) {
-    document.getElementById(id).style.display = 'none';
-  }
+  function showModal(id) { document.getElementById(id).style.display = ''; }
+  function hideModal(id) { document.getElementById(id).style.display = 'none'; }
 
   // ---- Save System ----
   function loadSave() {
     try {
       const data = localStorage.getItem('tinylogic_save');
-      if (data) {
-        const parsed = JSON.parse(data);
-        save = { ...save, ...parsed };
-      }
-    } catch (e) {
-      console.warn('Could not load save:', e);
-    }
+      if (data) save = { ...save, ...JSON.parse(data) };
+    } catch (e) { console.warn('Could not load save:', e); }
   }
 
   function saveToDisk() {
     try {
       localStorage.setItem('tinylogic_save', JSON.stringify(save));
-    } catch (e) {
-      console.warn('Could not save:', e);
-    }
+    } catch (e) { console.warn('Could not save:', e); }
   }
 
   function resetSave() {
     save = { unlocked: { 1: 1 }, stars: {}, lastWorld: 1, lastLevel: 1, hero: null };
-    heroSelectId = 'bird';
-    heroSelectPreset = 0;
     saveToDisk();
   }
 
-  return {
-    init,
-    onLevelComplete,
-    onLevelFail,
-    resetSave,
-  };
+  return { init, onLevelComplete, onLevelFail, resetSave };
 })();
 
 // Boot
-document.addEventListener('DOMContentLoaded', () => {
-  App.init();
-});
+document.addEventListener('DOMContentLoaded', () => App.init());

@@ -9,111 +9,63 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
   <!-- HOME SCREEN -->
   <div id="screen-home" class="screen active">
-    <div class="home-container">
-      <div class="home-logo" aria-hidden="true">
-        <svg class="logo-bird" viewBox="0 0 48 48" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="24" cy="26" rx="14" ry="13" fill="#FFD966" stroke="#E6B800" stroke-width="1.5"/>
-          <ellipse cx="24" cy="30" rx="9" ry="8" fill="#FFF3BF"/>
-          <ellipse cx="13" cy="24" rx="5" ry="8" fill="#F0C030" transform="rotate(-15 13 24)"/>
-          <ellipse cx="35" cy="24" rx="5" ry="8" fill="#F0C030" transform="rotate(15 35 24)"/>
-          <circle cx="19" cy="18" r="4.5" fill="white" stroke="#333" stroke-width="0.8"/>
-          <circle cx="20" cy="17.5" r="2.2" fill="#333"/>
-          <circle cx="20.8" cy="16.8" r="0.8" fill="white"/>
-          <circle cx="29" cy="18" r="4.5" fill="white" stroke="#333" stroke-width="0.8"/>
-          <circle cx="30" cy="17.5" r="2.2" fill="#333"/>
-          <circle cx="30.8" cy="16.8" r="0.8" fill="white"/>
-          <polygon points="24,4 20,14 28,14" fill="#FF6B35" stroke="#E05020" stroke-width="1" stroke-linejoin="round"/>
-          <ellipse cx="22" cy="11" rx="2" ry="4" fill="#FF6B35" transform="rotate(-20 22 11)"/>
-          <ellipse cx="26" cy="10" rx="2" ry="5" fill="#FF8C42" transform="rotate(10 26 10)"/>
-          <line x1="20" y1="38" x2="18" y2="44" stroke="#FF6B35" stroke-width="2" stroke-linecap="round"/>
-          <line x1="28" y1="38" x2="30" y2="44" stroke="#FF6B35" stroke-width="2" stroke-linecap="round"/>
-          <line x1="18" y1="44" x2="15" y2="44" stroke="#FF6B35" stroke-width="2" stroke-linecap="round"/>
-          <line x1="30" y1="44" x2="33" y2="44" stroke="#FF6B35" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </div>
-      <h1 class="home-title" data-i18n="app_name">Tiny Logic</h1>
-      <p class="home-subtitle" data-i18n="home_subtitle">Learn logic by playing!</p>
 
-      <!-- Language switcher -->
+    <!-- Header -->
+    <div class="home-top">
+      <h1 class="home-title" data-i18n="app_name">Tiny Logic</h1>
       <div class="lang-switcher" id="lang-switcher">
         <button class="lang-btn active" data-lang="en">EN</button>
         <button class="lang-btn" data-lang="fr">FR</button>
         <button class="lang-btn" data-lang="es">ES</button>
       </div>
-
-      <button class="btn btn-play" id="btn-start">
-        <span class="btn-icon">&#9654;</span> <span data-i18n="btn_play">Play</span>
-      </button>
-      <button class="btn btn-secondary" id="btn-continue" style="display:none;" data-i18n="btn_continue">
-        Continue
-      </button>
-      <button class="btn btn-hero-change" id="btn-hero-change" style="display:none;" data-i18n="btn_change_hero">
-        Change hero
-      </button>
-      <button class="btn btn-reset-progress" id="btn-reset-progress" style="display:none;" data-i18n="btn_reset_progress">
-        Reset progress
-      </button>
     </div>
 
-  <!-- RESET CONFIRM MODAL -->
-  <div id="modal-reset" class="modal" style="display:none;">
-    <div class="modal-content">
-      <div class="fail-icon">&#9888;</div>
-      <h2 class="fail-title" style="color:var(--text);" data-i18n="reset_title">Reset everything?</h2>
-      <p class="fail-msg" data-i18n="reset_msg">All your progress will be lost. Sure?</p>
-      <div class="victory-buttons">
-        <button class="btn btn-secondary" id="btn-reset-cancel" data-i18n="btn_no">No</button>
-        <button class="btn btn-play" id="btn-reset-confirm" style="background:#e53e3e;box-shadow:0 4px 0 #c53030;" data-i18n="btn_yes">Yes</button>
-      </div>
+    <!-- Hero showcase -->
+    <div class="hero-showcase" id="hero-showcase">
+      <!-- Filled by JS: 3 animated heroes -->
     </div>
-  </div>
-  </div>
 
-  <!-- HERO SELECT SCREEN -->
-  <div id="screen-hero" class="screen">
-    <div class="hero-select-container">
-      <h2 class="hero-select-title" data-i18n="hero_select_title">Choose your hero!</h2>
-      <p class="hero-select-sub" data-i18n="hero_select_sub">Who will join you on the adventure?</p>
+    <!-- Color picker for selected hero -->
+    <div class="showcase-colors" id="showcase-colors">
+      <!-- Filled by JS: 3 color dots -->
+    </div>
 
-      <div class="hero-cards" id="hero-cards">
-        <!-- Filled by JS -->
-      </div>
+    <!-- CTA buttons -->
+    <div class="home-actions">
+      <button class="btn btn-play btn-play-big" id="btn-start">
+        <span>&#9654;</span> <span data-i18n="btn_play">Play</span>
+      </button>
+      <button class="btn btn-secondary" id="btn-continue" style="display:none;" data-i18n="btn_continue">Continue</button>
+      <button class="btn btn-reset-progress" id="btn-reset-progress" style="display:none;" data-i18n="btn_reset_progress">Reset progress</button>
+    </div>
 
-      <div class="hero-colors-section" id="hero-colors-section">
-        <p class="hero-colors-label" data-i18n="hero_colors_label">Customize colors:</p>
-        <div class="hero-color-swatches" id="hero-color-swatches">
-          <!-- Filled by JS -->
+    <p class="home-subtitle" data-i18n="home_subtitle">Learn logic by playing!</p>
+
+    <!-- RESET CONFIRM MODAL -->
+    <div id="modal-reset" class="modal" style="display:none;">
+      <div class="modal-content">
+        <div class="fail-icon">&#9888;</div>
+        <h2 class="fail-title" style="color:var(--text);" data-i18n="reset_title">Reset everything?</h2>
+        <p class="fail-msg" data-i18n="reset_msg">All your progress will be lost. Sure?</p>
+        <div class="victory-buttons">
+          <button class="btn btn-secondary" id="btn-reset-cancel" data-i18n="btn_no">No</button>
+          <button class="btn btn-play" id="btn-reset-confirm" style="background:#e53e3e;box-shadow:0 4px 0 #c53030;" data-i18n="btn_yes">Yes</button>
         </div>
       </div>
-
-      <button class="btn btn-play hero-confirm-btn" id="btn-hero-confirm" data-i18n="btn_hero_confirm">
-        Let's go!
-      </button>
     </div>
   </div>
 
-  <!-- WORLD SELECT SCREEN -->
-  <div id="screen-worlds" class="screen">
-    <div class="screen-header">
-      <button class="btn-back" id="btn-worlds-back" aria-label="Back">&#9664;</button>
+  <!-- MAP SCREEN (replaces worlds + levels) -->
+  <div id="screen-map" class="screen">
+    <div class="map-header">
+      <button class="btn-back" id="btn-map-back" aria-label="Back">&#9664;</button>
       <h2 class="screen-title" data-i18n="worlds_title">Worlds</h2>
       <div class="spacer"></div>
     </div>
-    <div class="worlds-grid" id="worlds-grid">
-      <!-- Filled by JS -->
-    </div>
-  </div>
-
-  <!-- LEVEL SELECT SCREEN -->
-  <div id="screen-levels" class="screen">
-    <div class="screen-header">
-      <button class="btn-back" id="btn-levels-back" aria-label="Back">&#9664;</button>
-      <h2 class="screen-title" id="levels-title">World 1</h2>
-      <div class="spacer"></div>
-    </div>
-    <div class="levels-grid" id="levels-grid">
+    <div class="map-scroll" id="map-scroll">
       <!-- Filled by JS -->
     </div>
   </div>
@@ -130,9 +82,7 @@
     </div>
 
     <div class="game-area" id="game-area">
-      <div class="grid-container" id="grid-container">
-        <!-- Grid cells generated by JS -->
-      </div>
+      <div class="grid-container" id="grid-container"></div>
       <div class="hero" id="hero"></div>
     </div>
 
@@ -167,26 +117,14 @@
       </div>
     </div>
 
-    <div class="palette" id="palette">
-      <!-- Instruction buttons generated by JS -->
-    </div>
+    <div class="palette" id="palette"></div>
 
     <div class="controls">
-      <button class="btn btn-control btn-run" id="btn-run" aria-label="Run">
-        <span class="control-icon">&#9654;</span>
-      </button>
-      <button class="btn btn-control btn-stop" id="btn-stop" aria-label="Stop" style="display:none;">
-        <span class="control-icon">&#9632;</span>
-      </button>
-      <button class="btn btn-control btn-reset" id="btn-reset" aria-label="Reset">
-        <span class="control-icon">&#8634;</span>
-      </button>
-      <button class="btn btn-control btn-clear" id="btn-clear" aria-label="Clear">
-        <span class="control-icon">&#10005;</span>
-      </button>
-      <button class="btn btn-control btn-speed" id="btn-speed" aria-label="Speed">
-        <span class="control-icon" id="speed-icon">1x</span>
-      </button>
+      <button class="btn btn-control btn-run" id="btn-run" aria-label="Run"><span class="control-icon">&#9654;</span></button>
+      <button class="btn btn-control btn-stop" id="btn-stop" aria-label="Stop" style="display:none;"><span class="control-icon">&#9632;</span></button>
+      <button class="btn btn-control btn-reset" id="btn-reset" aria-label="Reset"><span class="control-icon">&#8634;</span></button>
+      <button class="btn btn-control btn-clear" id="btn-clear" aria-label="Clear"><span class="control-icon">&#10005;</span></button>
+      <button class="btn btn-control btn-speed" id="btn-speed" aria-label="Speed"><span class="control-icon" id="speed-icon">1x</span></button>
     </div>
   </div>
 
