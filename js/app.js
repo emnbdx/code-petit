@@ -223,13 +223,6 @@ const App = (() => {
           tile.innerHTML = html;
         }
 
-        if (unlocked) {
-          tile.addEventListener('click', () => {
-            currentWorld = wId;
-            setWorldTheme(wId);
-            showScreen('levels');
-          });
-        }
 
         rowEl.appendChild(tile);
       });

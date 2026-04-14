@@ -300,12 +300,13 @@ html, body {
   transition: transform 0.12s;
   min-height: 0;
 }
+.path-tile {
+  cursor: default;
+}
 .path-tile.tile-locked {
   opacity: 0.42;
-  cursor: default;
   filter: grayscale(0.4);
 }
-.path-tile.unlocked:active { transform: scale(0.93); }
 
 /* Subtle texture overlay per world via ::after */
 .path-tile::after {
