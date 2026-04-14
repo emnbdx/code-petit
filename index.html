@@ -12,28 +12,38 @@
 
   <!-- HOME SCREEN -->
   <div id="screen-home" class="screen active">
-    <div class="home-top">
-      <h1 class="home-title" data-i18n="app_name">Tiny Logic</h1>
-      <div class="lang-switcher" id="lang-switcher">
-        <button class="lang-btn active" data-lang="en">EN</button>
-        <button class="lang-btn" data-lang="fr">FR</button>
-        <button class="lang-btn" data-lang="es">ES</button>
+
+    <!-- Header -->
+    <div class="home-header">
+      <div class="home-header-top">
+        <h1 class="home-title" data-i18n="app_name">Tiny Logic</h1>
+        <div class="lang-switcher" id="lang-switcher">
+          <button class="lang-btn active" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="fr">FR</button>
+          <button class="lang-btn" data-lang="es">ES</button>
+        </div>
       </div>
+      <p class="home-tagline" data-i18n="home_subtitle">Learn logic by playing!</p>
     </div>
 
-    <!-- Path scene filled by JS -->
-    <div class="home-path-scene" id="home-path-scene"></div>
+    <!-- 3 heroes (filled by JS) -->
+    <div class="home-heroes" id="home-heroes"></div>
 
-    <div class="home-actions">
-      <button class="btn btn-play btn-play-big" id="btn-start">
-        <span>&#9654;</span> <span data-i18n="btn_play">Play</span>
-      </button>
-      <div class="home-actions-row">
-        <button class="btn btn-secondary btn-small" id="btn-continue" style="display:none;" data-i18n="btn_continue">Continue</button>
-        <button class="btn btn-secondary btn-small" id="btn-hero-change" style="display:none;" data-i18n="btn_change_hero">Change hero</button>
-      </div>
-      <button class="btn btn-reset-progress" id="btn-reset-progress" style="display:none;" data-i18n="btn_reset_progress">Reset progress</button>
+    <!-- Action buttons -->
+    <div class="home-buttons">
+      <button class="game-btn btn-play" id="btn-start">&#9654; <span data-i18n="btn_play">Play</span></button>
+      <button class="game-btn btn-continue" id="btn-continue" style="display:none;">&#9658; <span data-i18n="btn_continue">Continue</span></button>
+      <button class="game-btn btn-sm btn-hero" id="btn-hero-change" style="display:none;">&#x1F504; <span data-i18n="btn_change_hero">Change hero</span></button>
+      <button class="game-btn btn-sm btn-danger" id="btn-reset-progress" style="display:none;">&#x1F5D1; <span data-i18n="btn_reset_progress">Reset progress</span></button>
     </div>
+
+    <!-- World map (filled by JS) -->
+    <section class="world-map-section">
+      <h2 class="world-map-title">&#x1F5FA; <span data-i18n="worlds_title">Worlds</span></h2>
+      <div class="world-map-container" id="world-map-container"></div>
+    </section>
+
+    <div class="home-footer">Tiny Logic &copy; 2025</div>
 
     <!-- RESET CONFIRM MODAL -->
     <div id="modal-reset" class="modal" style="display:none;">

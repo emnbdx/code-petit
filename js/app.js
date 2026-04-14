@@ -24,19 +24,6 @@ const App = (() => {
   let worldsGrid, levelsGrid, levelsTitle;
   let victoryStars, victoryTitle, victoryMsg;
 
-  // Tile order for the snake path (4 rows × 4 tiles)
-  // For reversed rows, DOM order is reversed so visual order reads correctly.
-  // Each entry: { wId, t } — wId = world 1-8, t = 0 (icon tile) or 1 (stars tile)
-  const TILE_ROWS = [
-    // Row 0 (LTR): W1 W1 W2 W2
-    [{wId:1,t:0},{wId:1,t:1},{wId:2,t:0},{wId:2,t:1}],
-    // Row 1 (RTL, reversed DOM): visual order W3 W3 W4 W4
-    [{wId:4,t:1},{wId:4,t:0},{wId:3,t:1},{wId:3,t:0}],
-    // Row 2 (LTR): W5 W5 W6 W6
-    [{wId:5,t:0},{wId:5,t:1},{wId:6,t:0},{wId:6,t:1}],
-    // Row 3 (RTL, reversed DOM): visual order W7 W7 W8 W8
-    [{wId:8,t:1},{wId:8,t:0},{wId:7,t:1},{wId:7,t:0}],
-  ];
 
   function init() {
     ['home', 'hero', 'worlds', 'levels', 'game'].forEach(id => {
@@ -84,7 +71,7 @@ const App = (() => {
       saveToDisk();
       applyHeroConfig();
       updateHomeButtons();
-      buildPathScene();
+      buildHomeScreen();
       showScreen('worlds');
     });
 
@@ -115,7 +102,7 @@ const App = (() => {
       heroSelectPreset = 0;
       applyHeroConfig();
       updateHomeButtons();
-      buildPathScene();
+      buildHomeScreen();
     });
 
     // Language
@@ -129,12 +116,12 @@ const App = (() => {
         updateLangButtons();
         if (screens.worlds && screens.worlds.classList.contains('active')) buildWorldsScreen();
         if (screens.hero   && screens.hero.classList.contains('active'))   buildHeroScreen();
-        if (screens.home   && screens.home.classList.contains('active'))   buildPathScene();
+        if (screens.home   && screens.home.classList.contains('active'))   buildHomeScreen();
       });
     });
 
     updateHomeButtons();
-    buildPathScene();
+    buildHomeScreen();
     showScreen('home');
   }
 
@@ -166,88 +153,108 @@ const App = (() => {
 
     if (name === 'worlds') buildWorldsScreen();
     if (name === 'levels') showLevels(currentWorld);
-    if (name === 'home')   { updateHomeButtons(); buildPathScene(); }
+    if (name === 'home')   { updateHomeButtons(); buildHomeScreen(); }
     if (name === 'hero')   buildHeroScreen();
   }
 
-  // ---- Home Path Scene ----
-  function buildPathScene() {
-    const scene = document.getElementById('home-path-scene');
-    scene.innerHTML = '';
+  // ---- Home Screen ----
+  function buildHomeScreen() {
+    buildHeroShowcase();
+    buildWorldMap();
+  }
 
-    const grid = document.createElement('div');
-    grid.className = 'path-grid';
+  function buildHeroShowcase() {
+    const el = document.getElementById('home-heroes');
+    el.innerHTML = '';
 
-    // Which row each hero walks on (0-indexed)
-    // Bird on row 0, Cat on row 1, Robot on row 3
-    const heroRows = [0, 1, 3];
-    // LTR rows use wander-lr, RTL rows use wander-rl
-    const isRTL = [false, true, false, true];
+    const anims   = ['anim-float', 'anim-bounce-slow', 'anim-wiggle'];
+    const isLarge = [false, true, false];
 
-    TILE_ROWS.forEach((tiles, rowIdx) => {
-      // Bend connector between rows
-      if (rowIdx > 0) {
-        const bend = document.createElement('div');
-        bend.className = 'path-bend-h ' + (rowIdx % 2 === 1 ? 'bend-right-h' : 'bend-left-h');
-        grid.appendChild(bend);
-      }
+    Sprites.HERO_DEFS.forEach((def, idx) => {
+      const preset  = (def.id === heroSelectId) ? heroSelectPreset : 0;
+      const slot    = document.createElement('div');
+      slot.className = 'home-hero-slot';
 
-      const rowEl = document.createElement('div');
-      rowEl.className = 'path-row' + (isRTL[rowIdx] ? ' reverse' : '');
+      const preview = document.createElement('div');
+      preview.className = 'home-hero-preview ' + anims[idx] + (isLarge[idx] ? ' hero-lg' : '');
+      preview.innerHTML = Sprites.getPreviewSVG(def.id, preset);
 
-      tiles.forEach(({ wId, t }) => {
-        const world    = WORLDS.find(w => w.id === wId);
-        const unlocked = isWorldUnlocked(wId);
-        const progress = getWorldProgress(wId);
+      const name = document.createElement('span');
+      name.className   = 'home-hero-name';
+      name.textContent = def.name;
 
-        const tile = document.createElement('div');
-        tile.className = 'path-tile ' + (unlocked ? 'unlocked' : 'tile-locked');
-        tile.dataset.world = wId;
-        tile.style.setProperty('--tile-bg',   `var(--w${wId}-light)`);
-        tile.style.setProperty('--tile-dark',  `var(--w${wId}-dark)`);
+      slot.appendChild(preview);
+      slot.appendChild(name);
+      el.appendChild(slot);
+    });
+  }
 
-        if (t === 0) {
-          // Icon tile
-          const icon = document.createElement('span');
-          icon.className = 'path-tile-icon';
-          icon.textContent = world.icon;
-          tile.appendChild(icon);
-        } else {
-          // Stars tile
-          let html = '<div class="path-tile-stars">';
-          for (let s = 1; s <= 3; s++) {
-            const filled = s <= Math.round((progress.totalStars / Math.max(progress.completed * 3, 1)) * 3);
-            html += `<span class="${(unlocked && filled) ? 'path-ts-on' : 'path-ts-off'}">\u2605</span>`;
-          }
-          html += '</div>';
-          tile.innerHTML = html;
-        }
+  function buildWorldMap() {
+    const container = document.getElementById('world-map-container');
+    container.innerHTML = '';
 
+    // Dashed S-curve SVG background path
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const svg   = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('viewBox', '0 0 300 700');
+    svg.setAttribute('class',   'world-map-svg');
+    svg.setAttribute('fill',    'none');
 
-        rowEl.appendChild(tile);
-      });
+    const path = document.createElementNS(svgNS, 'path');
+    path.setAttribute('d', 'M150 50 C80 100,220 150,150 200 C80 250,220 300,150 350 C80 400,220 450,150 500 C80 550,220 600,150 650');
+    path.setAttribute('stroke', 'rgba(0,0,0,0.1)');
+    path.setAttribute('stroke-width', '8');
+    path.setAttribute('stroke-linecap', 'round');
+    path.setAttribute('stroke-dasharray', '12 8');
+    svg.appendChild(path);
+    container.appendChild(svg);
 
-      // Add walking heroes for this row
-      const heroIdx = heroRows.indexOf(rowIdx);
-      if (heroIdx !== -1) {
-        const def    = Sprites.HERO_DEFS[heroIdx];
-        const preset = (def.id === heroSelectId) ? heroSelectPreset : 0;
+    // World nodes alternating left / right
+    const nodesDiv = document.createElement('div');
+    nodesDiv.className = 'world-map-nodes';
 
-        const outer = document.createElement('div');
-        outer.className = `path-walker-outer path-walker-outer-${heroIdx}`;
+    WORLDS.forEach((world, idx) => {
+      const unlocked = isWorldUnlocked(world.id);
+      const isLeft   = idx % 2 === 0;
 
-        const walker = document.createElement('div');
-        walker.className = 'path-walker';
-        Sprites.initHero(walker, def.id, preset);
+      const row = document.createElement('div');
+      row.className = 'world-map-node-row ' + (isLeft ? 'left' : 'right');
 
-        outer.appendChild(walker);
-        rowEl.appendChild(outer);
-      }
+      const circle = document.createElement('div');
+      circle.className  = 'world-map-node-circle' + (unlocked ? '' : ' locked');
+      circle.style.background = `var(--w${world.id})`;
+      circle.textContent = world.icon;
 
-      grid.appendChild(rowEl);
+      const name = document.createElement('span');
+      name.className   = 'world-map-node-name' + (unlocked ? '' : ' locked');
+      name.textContent = I18n.t(world.nameKey);
+
+      if (isLeft) { row.appendChild(circle); row.appendChild(name); }
+      else        { row.appendChild(name);   row.appendChild(circle); }
+
+      nodesDiv.appendChild(row);
     });
 
-    scene.appendChild(grid);
+    container.appendChild(nodesDiv);
+
+    // 3 heroes floating on the map
+    const positions = [
+      { style: 'top:12px; left:calc(50% - 26px);', anim: 'anim-float' },
+      { style: 'top:240px; right:12px;',            anim: 'anim-bounce-slow' },
+      { style: 'bottom:100px; left:12px;',           anim: 'anim-wiggle' },
+    ];
+
+    Sprites.HERO_DEFS.forEach((def, idx) => {
+      const pos    = positions[idx];
+      const preset = (def.id === heroSelectId) ? heroSelectPreset : 0;
+
+      const heroEl = document.createElement('div');
+      heroEl.className  = 'map-hero-float ' + pos.anim;
+      heroEl.style.cssText = pos.style;
+      heroEl.innerHTML  = Sprites.getPreviewSVG(def.id, preset);
+
+      container.appendChild(heroEl);
+    });
   }
 
   // ---- Hero Select Screen ----

@@ -126,37 +126,212 @@ html, body {
   justify-content: center;
 }
 
-/* ---- HOME (base - overridden by path scene block below) ---- */
+/* ============================================
+   HOME — proto-inspired redesign
+   ============================================ */
 #screen-home {
-  /* overridden later */
+  background: #fdf8ee;
+  align-items: center;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
-.home-top {
+/* ---- Header ---- */
+.home-header {
+  width: 100%;
+  padding: 28px 20px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+.home-header-top {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  padding: 16px 20px 8px;
 }
-
 .home-title {
-  font-size: 30px;
-  font-weight: 900;
-  background: linear-gradient(135deg, var(--w2) 0%, var(--w7) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-size: 44px;
+  font-weight: 800;
+  color: hsl(25, 95%, 55%);
+  text-shadow: 0 3px 0 hsl(25, 95%, 35%), 0 6px 14px rgba(0,0,0,0.14);
+  line-height: 1;
+  margin: 0;
+  letter-spacing: -1px;
+}
+.home-tagline {
+  font-size: 14px;
+  color: var(--text-light);
   margin: 0;
 }
 
-.home-subtitle {
-  font-size: 14px;
+/* ---- Hero showcase ---- */
+.home-heroes {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 16px;
+  padding: 12px 20px 4px;
+  width: 100%;
+}
+.home-hero-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.home-hero-preview {
+  width: 72px;
+  height: 72px;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.18));
+}
+.home-hero-preview.hero-lg {
+  width: 80px;
+  height: 80px;
+}
+.home-hero-preview .hero-svg { display: none; }
+.home-hero-preview .hero-svg[data-dir-svg="2"] { display: block; width: 100%; height: 100%; }
+.home-hero-name {
+  font-size: 12px;
+  font-weight: 700;
   color: var(--text-light);
-  padding: 0 0 12px;
-  text-align: center;
 }
 
-/* ---- Hero showcase (home) ---- */
+/* Hero animations */
+.anim-float       { animation: h-float      3s   ease-in-out infinite; }
+.anim-bounce-slow { animation: h-bounce     2s   ease-in-out infinite 0.3s; }
+.anim-wiggle      { animation: h-wiggle     2s   ease-in-out infinite 0.6s; }
+@keyframes h-float  { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+@keyframes h-bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+@keyframes h-wiggle { 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(-5deg)} 75%{transform:rotate(5deg)} }
+
+/* ---- Game buttons ---- */
+.home-buttons {
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 20px 8px;
+}
+.game-btn {
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 18px;
+  border-radius: 20px;
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-bottom: 4px solid transparent;
+  cursor: pointer;
+  width: 100%;
+  transition: filter 0.1s, transform 0.1s, border-bottom-width 0.1s;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.13);
+}
+.game-btn:active {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+  filter: brightness(0.95);
+}
+.game-btn.btn-play     { background: hsl(25,95%,55%); color:#fff; border-bottom-color: hsl(25,95%,35%); }
+.game-btn.btn-continue { background: hsl(200,85%,55%); color:#fff; border-bottom-color: hsl(200,85%,38%); }
+.game-btn.btn-sm       { font-size: 15px; padding: 10px 20px; }
+.game-btn.btn-hero     { background: hsl(145,60%,45%); color:#fff; border-bottom-color: hsl(145,60%,28%); }
+.game-btn.btn-danger   { background: hsl(0,75%,55%);   color:#fff; border-bottom-color: hsl(0,75%,38%); }
+
+/* ---- World map ---- */
+.world-map-section {
+  width: 100%;
+  padding: 8px 0 24px;
+}
+.world-map-title {
+  text-align: center;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-light);
+  margin: 0 0 4px;
+}
+.world-map-container {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+  min-height: 640px;
+}
+.world-map-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.world-map-nodes {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 8px;
+}
+.world-map-node-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.world-map-node-row.left  { justify-content: flex-start; padding-left: 8px; }
+.world-map-node-row.right { justify-content: flex-end;   padding-right: 8px; }
+.world-map-node-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.4);
+  border: 2px solid rgba(255,255,255,0.55);
+  flex-shrink: 0;
+}
+.world-map-node-circle.locked {
+  filter: grayscale(0.65);
+  opacity: 0.45;
+}
+.world-map-node-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+.world-map-node-name.locked { opacity: 0.4; }
+
+/* Floating heroes on the map */
+.map-hero-float {
+  position: absolute;
+  pointer-events: none;
+}
+.map-hero-float .hero-svg { display: none; }
+.map-hero-float .hero-svg[data-dir-svg="2"] {
+  display: block;
+  width: 52px;
+  height: 52px;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.22));
+}
+.map-hero-float.anim-float       { animation: h-float  3s ease-in-out infinite; }
+.map-hero-float.anim-bounce-slow { animation: h-bounce 2s ease-in-out infinite 0.5s; }
+.map-hero-float.anim-wiggle      { animation: h-wiggle 2s ease-in-out infinite 1s; }
+
+/* Home footer */
+.home-footer {
+  padding: 12px 16px 20px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+/* ---- LEGACY — kept for hero select screen ---- */
 .hero-showcase {
   display: flex;
   align-items: flex-end;
@@ -249,15 +424,7 @@ html, body {
 }
 .color-dot:active { transform: scale(0.88); }
 
-/* ============================================
-   HOME PATH SCENE
-   ============================================ */
-#screen-home {
-  background: linear-gradient(160deg, #e6fffa 0%, #ebf8ff 50%, #faf5ff 100%);
-  align-items: center;
-  overflow: hidden;
-}
-
+/* (path scene CSS removed — replaced by world map) */
 .home-path-scene {
   flex: 1;
   width: 100%;
@@ -399,14 +566,7 @@ html, body {
   50%       { transform: translateY(-6px); }
 }
 
-/* Home actions */
-.home-actions-row {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-}
-
-/* World progression strip (home) */
+/* World progression strip (home — legacy, unused) */
 .world-strip {
   display: flex;
   align-items: center;
@@ -496,20 +656,7 @@ html, body {
 .world-strip-star-on  { color: #ecc94b; }
 .world-strip-star-off { color: #e2e8f0; }
 
-/* Home actions */
-.home-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  padding: 16px 20px 4px;
-  width: 100%;
-}
-.btn-play-big {
-  font-size: 20px;
-  padding: 16px 48px;
-  min-width: 200px;
-}
+
 
 /* ---- MAP SCREEN ---- */
 .map-header {
