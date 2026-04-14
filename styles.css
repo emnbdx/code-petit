@@ -171,48 +171,58 @@ html, body {
 .home-worlds-strip {
   width: 100%;
   overflow-x: auto;
-  overflow-y: visible;
+  overflow-y: hidden;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  padding: 16px 0 8px;
+  scroll-snap-type: x proximity;
+  padding: 16px 0 12px;
+  position: relative;
 }
 .home-worlds-strip::-webkit-scrollbar { display: none; }
+/* Right fade — hints at more content to scroll */
+.home-worlds-strip::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 48px;
+  background: linear-gradient(to right, transparent, rgba(235,248,255,0.92));
+  pointer-events: none;
+}
 
-.worlds-strip-inner {
+.worlds-nodes-row {
   position: relative;
-  margin: 0 auto;
+  display: flex;
   /* width + height set by JS */
 }
 
 .worlds-path-svg {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
 }
 
-.home-world-node {
-  position: absolute;
+/* Flex node — width + padding-top set per-node in JS */
+.worlds-node {
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 5px;
-  transform: translate(-50%, -50%);
+  scroll-snap-align: center;
   pointer-events: none;
 }
 
 .home-world-circle {
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
   border-radius: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
-  border: 2px solid rgba(255,255,255,0.6);
+  font-size: 24px;
+  border: 2px solid rgba(255,255,255,0.7);
   box-shadow: 0 4px 12px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.4);
-  transition: transform 0.15s;
 }
 
 .home-world-label {
@@ -232,8 +242,8 @@ html, body {
   pointer-events: none;
 }
 .map-hero-float svg {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   display: block;
 }
 

@@ -166,29 +166,26 @@ const App = (() => {
     const strip = document.getElementById('home-worlds-strip');
     strip.innerHTML = '';
 
-    // Geometry — matches proto's visual rhythm
-    const SPACING = 90;
-    const PAD     = 50;
-    const W       = PAD + (WORLDS.length - 1) * SPACING + PAD; // 730
-    const H       = 170;
-    const Y_TOP   = 35;   // center of top nodes
-    const Y_BOT   = 120;  // center of bottom nodes
-    const Y_MID   = (Y_TOP + Y_BOT) / 2; // 77 — where heroes float
+    // NODE_W adapts to screen: ~3.5 nodes visible on any width, max 90px on desktop
+    const NODE_W  = Math.round(Math.min(90, window.innerWidth / 3.5));
+    const R       = 26;    // circle radius (52px diameter)
+    const Y_TOP   = 38;    // circle center y — top nodes
+    const Y_BOT   = 116;   // circle center y — bottom nodes
+    const H       = 162;   // row height (labels + hero anim headroom)
+    const TOTAL_W = NODE_W * WORLDS.length;
 
-    const xPos = WORLDS.map((_, i) => PAD + i * SPACING);
+    // x centers align exactly with flex item midpoints
+    const xPos = WORLDS.map((_, i) => NODE_W * i + NODE_W / 2);
     const yPos = WORLDS.map((_, i) => i % 2 === 0 ? Y_TOP : Y_BOT);
 
-    // Outer wrapper (centered, scrolls horizontally)
-    const inner = document.createElement('div');
-    inner.className = 'worlds-strip-inner';
-    inner.style.width  = W + 'px';
-    inner.style.height = H + 'px';
+    const row = document.createElement('div');
+    row.className = 'worlds-nodes-row';
+    row.style.cssText = `width:${TOTAL_W}px;height:${H}px;`;
 
-    // SVG path — dashed sinuous curve through every node
+    // SVG sinuous path overlay (sized to match row exactly)
     const svgNS = 'http://www.w3.org/2000/svg';
     const svg   = document.createElementNS(svgNS, 'svg');
-    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-    svg.setAttribute('preserveAspectRatio', 'none');
+    svg.setAttribute('viewBox', `0 0 ${TOTAL_W} ${H}`);
     svg.classList.add('worlds-path-svg');
 
     let d = `M ${xPos[0]},${yPos[0]}`;
@@ -205,14 +202,14 @@ const App = (() => {
     path.setAttribute('stroke-dasharray', '12 8');
     path.setAttribute('fill', 'none');
     svg.appendChild(path);
-    inner.appendChild(svg);
+    row.appendChild(svg);
 
-    // World nodes — all visible, no lock state, no progress
+    // Flex nodes — padding-top positions circle center at Y_TOP or Y_BOT
     WORLDS.forEach((world, idx) => {
       const node = document.createElement('div');
-      node.className = 'home-world-node';
-      node.style.left = xPos[idx] + 'px';
-      node.style.top  = yPos[idx] + 'px';
+      node.className        = 'worlds-node';
+      node.style.width      = NODE_W + 'px';
+      node.style.paddingTop = (yPos[idx] - R) + 'px';
 
       const circle = document.createElement('div');
       circle.className = 'home-world-circle';
@@ -225,26 +222,26 @@ const App = (() => {
 
       node.appendChild(circle);
       node.appendChild(label);
-      inner.appendChild(node);
+      row.appendChild(node);
     });
 
-    // 3 heroes floating along the mid-line (like proto)
+    // Heroes: top-left, bottom-mid, top-right (absolute over row)
     [
-      { x: xPos[0] + SPACING * 1.5, y: Y_TOP - 2,  anim: 'anim-float',      defIdx: 0 },
-      { x: xPos[0] + SPACING * 3.5, y: Y_BOT + 2,  anim: 'anim-bounce-slow',defIdx: 1 },
-      { x: xPos[0] + SPACING * 5.5, y: Y_TOP - 2,  anim: 'anim-wiggle',     defIdx: 2 },
-    ].forEach(({ x, y, anim, defIdx }) => {
+      { xIdx: 1.5, y: Y_TOP - 10, anim: 'anim-float',       defIdx: 0 },
+      { xIdx: 3.5, y: Y_BOT + 10, anim: 'anim-bounce-slow', defIdx: 1 },
+      { xIdx: 5.5, y: Y_TOP - 10, anim: 'anim-wiggle',      defIdx: 2 },
+    ].forEach(({ xIdx, y, anim, defIdx }) => {
       const def    = Sprites.HERO_DEFS[defIdx];
       const preset = def.id === heroSelectId ? heroSelectPreset : 0;
       const heroEl = document.createElement('div');
       heroEl.className  = 'map-hero-float ' + anim;
-      heroEl.style.left = x + 'px';
+      heroEl.style.left = (xIdx * NODE_W) + 'px';
       heroEl.style.top  = y + 'px';
       heroEl.innerHTML  = Sprites.getPreviewSVG(def.id, preset);
-      inner.appendChild(heroEl);
+      row.appendChild(heroEl);
     });
 
-    strip.appendChild(inner);
+    strip.appendChild(row);
   }
 
   // ---- Hero Select Screen ----
