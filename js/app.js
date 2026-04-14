@@ -166,48 +166,48 @@ const App = (() => {
     const strip = document.getElementById('home-worlds-strip');
     strip.innerHTML = '';
 
-    const SPACING = 95;
+    // Geometry — matches proto's visual rhythm
+    const SPACING = 90;
     const PAD     = 50;
-    const Y_TOP   = 65;
-    const Y_BOT   = 145;
-    const W       = PAD + (WORLDS.length - 1) * SPACING + PAD; // 765
-    const H       = 210;
+    const W       = PAD + (WORLDS.length - 1) * SPACING + PAD; // 730
+    const H       = 170;
+    const Y_TOP   = 35;   // center of top nodes
+    const Y_BOT   = 120;  // center of bottom nodes
+    const Y_MID   = (Y_TOP + Y_BOT) / 2; // 77 — where heroes float
 
     const xPos = WORLDS.map((_, i) => PAD + i * SPACING);
     const yPos = WORLDS.map((_, i) => i % 2 === 0 ? Y_TOP : Y_BOT);
 
-    // Inner container (sized to content, centered by margin:auto)
+    // Outer wrapper (centered, scrolls horizontally)
     const inner = document.createElement('div');
     inner.className = 'worlds-strip-inner';
-    inner.style.width = W + 'px';
+    inner.style.width  = W + 'px';
     inner.style.height = H + 'px';
 
-    // SVG path
+    // SVG path — dashed sinuous curve through every node
     const svgNS = 'http://www.w3.org/2000/svg';
     const svg   = document.createElementNS(svgNS, 'svg');
     svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.setAttribute('preserveAspectRatio', 'none');
     svg.classList.add('worlds-path-svg');
-    svg.style.width  = W + 'px';
-    svg.style.height = H + 'px';
 
-    // Build S-curve path through all nodes
     let d = `M ${xPos[0]},${yPos[0]}`;
     for (let i = 1; i < WORLDS.length; i++) {
-      const mx = (xPos[i - 1] + xPos[i]) / 2;
+      const mx = (xPos[i-1] + xPos[i]) / 2;
       d += ` C ${mx},${yPos[i-1]} ${mx},${yPos[i]} ${xPos[i]},${yPos[i]}`;
     }
 
     const path = document.createElementNS(svgNS, 'path');
     path.setAttribute('d', d);
-    path.setAttribute('stroke', 'rgba(0,0,0,0.1)');
-    path.setAttribute('stroke-width', '7');
+    path.setAttribute('stroke', 'rgba(0,0,0,0.12)');
+    path.setAttribute('stroke-width', '6');
     path.setAttribute('stroke-linecap', 'round');
-    path.setAttribute('stroke-dasharray', '11 7');
+    path.setAttribute('stroke-dasharray', '12 8');
     path.setAttribute('fill', 'none');
     svg.appendChild(path);
     inner.appendChild(svg);
 
-    // World nodes (all visible, no lock state)
+    // World nodes — all visible, no lock state, no progress
     WORLDS.forEach((world, idx) => {
       const node = document.createElement('div');
       node.className = 'home-world-node';
@@ -228,22 +228,18 @@ const App = (() => {
       inner.appendChild(node);
     });
 
-    // 3 heroes floating along the path
-    const heroSlots = [
-      { xIdx: 1.5, anim: 'anim-float',       defIdx: 0 },
-      { xIdx: 3.5, anim: 'anim-bounce-slow',  defIdx: 1 },
-      { xIdx: 5.5, anim: 'anim-wiggle',       defIdx: 2 },
-    ];
-    heroSlots.forEach(({ xIdx, anim, defIdx }) => {
+    // 3 heroes floating along the mid-line (like proto)
+    [
+      { x: xPos[0] + SPACING * 1.5, y: Y_TOP - 2,  anim: 'anim-float',      defIdx: 0 },
+      { x: xPos[0] + SPACING * 3.5, y: Y_BOT + 2,  anim: 'anim-bounce-slow',defIdx: 1 },
+      { x: xPos[0] + SPACING * 5.5, y: Y_TOP - 2,  anim: 'anim-wiggle',     defIdx: 2 },
+    ].forEach(({ x, y, anim, defIdx }) => {
       const def    = Sprites.HERO_DEFS[defIdx];
       const preset = def.id === heroSelectId ? heroSelectPreset : 0;
-      const hx     = PAD + xIdx * SPACING;
-      const hy     = (Y_TOP + Y_BOT) / 2;
-
       const heroEl = document.createElement('div');
       heroEl.className  = 'map-hero-float ' + anim;
-      heroEl.style.left = hx + 'px';
-      heroEl.style.top  = hy + 'px';
+      heroEl.style.left = x + 'px';
+      heroEl.style.top  = y + 'px';
       heroEl.innerHTML  = Sprites.getPreviewSVG(def.id, preset);
       inner.appendChild(heroEl);
     });

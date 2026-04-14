@@ -174,20 +174,22 @@ html, body {
   overflow-y: visible;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  padding: 8px 0 4px;
+  padding: 16px 0 8px;
 }
 .home-worlds-strip::-webkit-scrollbar { display: none; }
 
 .worlds-strip-inner {
   position: relative;
-  height: 210px;
   margin: 0 auto;
+  /* width + height set by JS */
 }
 
 .worlds-path-svg {
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .home-world-node {
@@ -195,21 +197,22 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
 
 .home-world-circle {
-  width: 52px;
-  height: 52px;
-  border-radius: 16px;
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
-  border: 3px solid white;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.4);
+  font-size: 26px;
+  border: 2px solid rgba(255,255,255,0.6);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.4);
+  transition: transform 0.15s;
 }
 
 .home-world-label {
@@ -217,7 +220,7 @@ html, body {
   font-weight: 700;
   color: var(--text);
   text-align: center;
-  max-width: 60px;
+  max-width: 64px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -229,8 +232,8 @@ html, body {
   pointer-events: none;
 }
 .map-hero-float svg {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   display: block;
 }
 
