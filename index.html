@@ -12,8 +12,6 @@
 
   <!-- HOME SCREEN -->
   <div id="screen-home" class="screen active">
-
-    <!-- Header -->
     <div class="home-top">
       <h1 class="home-title" data-i18n="app_name">Tiny Logic</h1>
       <div class="lang-switcher" id="lang-switcher">
@@ -23,31 +21,19 @@
       </div>
     </div>
 
-    <!-- Hero showcase -->
-    <div class="hero-showcase" id="hero-showcase">
-      <!-- Filled by JS: 3 animated heroes -->
-    </div>
+    <!-- Path scene filled by JS -->
+    <div class="home-path-scene" id="home-path-scene"></div>
 
-    <!-- Color picker for selected hero -->
-    <div class="showcase-colors" id="showcase-colors">
-      <!-- Filled by JS: color dots -->
-    </div>
-
-    <!-- World progression strip -->
-    <div class="world-strip" id="world-strip">
-      <!-- Filled by JS -->
-    </div>
-
-    <!-- CTA buttons -->
     <div class="home-actions">
       <button class="btn btn-play btn-play-big" id="btn-start">
         <span>&#9654;</span> <span data-i18n="btn_play">Play</span>
       </button>
-      <button class="btn btn-secondary" id="btn-continue" style="display:none;" data-i18n="btn_continue">Continue</button>
+      <div class="home-actions-row">
+        <button class="btn btn-secondary btn-small" id="btn-continue" style="display:none;" data-i18n="btn_continue">Continue</button>
+        <button class="btn btn-secondary btn-small" id="btn-hero-change" style="display:none;" data-i18n="btn_change_hero">Change hero</button>
+      </div>
       <button class="btn btn-reset-progress" id="btn-reset-progress" style="display:none;" data-i18n="btn_reset_progress">Reset progress</button>
     </div>
-
-    <p class="home-subtitle" data-i18n="home_subtitle">Learn logic by playing!</p>
 
     <!-- RESET CONFIRM MODAL -->
     <div id="modal-reset" class="modal" style="display:none;">
@@ -63,6 +49,20 @@
     </div>
   </div>
 
+  <!-- HERO SELECT SCREEN -->
+  <div id="screen-hero" class="screen">
+    <div class="hero-select-container">
+      <h2 class="hero-select-title" data-i18n="hero_select_title">Choose your hero!</h2>
+      <p class="hero-select-sub" data-i18n="hero_select_sub">Who will join you on the adventure?</p>
+      <div class="hero-cards" id="hero-cards"></div>
+      <div class="hero-colors-section" id="hero-colors-section">
+        <p class="hero-colors-label" data-i18n="hero_colors_label">Customize colors:</p>
+        <div class="hero-color-swatches" id="hero-color-swatches"></div>
+      </div>
+      <button class="btn btn-play hero-confirm-btn" id="btn-hero-confirm" data-i18n="btn_hero_confirm">Let's go!</button>
+    </div>
+  </div>
+
   <!-- WORLD SELECT SCREEN -->
   <div id="screen-worlds" class="screen">
     <div class="screen-header">
@@ -70,9 +70,7 @@
       <h2 class="screen-title" data-i18n="worlds_title">Worlds</h2>
       <div class="spacer"></div>
     </div>
-    <div class="worlds-grid" id="worlds-grid">
-      <!-- Filled by JS -->
-    </div>
+    <div class="worlds-grid" id="worlds-grid"></div>
   </div>
 
   <!-- LEVEL SELECT SCREEN -->
@@ -82,9 +80,7 @@
       <h2 class="screen-title" id="levels-title">World 1</h2>
       <div class="spacer"></div>
     </div>
-    <div class="levels-grid" id="levels-grid">
-      <!-- Filled by JS -->
-    </div>
+    <div class="levels-grid" id="levels-grid"></div>
   </div>
 
   <!-- GAME SCREEN -->

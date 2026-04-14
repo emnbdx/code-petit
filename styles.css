@@ -126,14 +126,9 @@ html, body {
   justify-content: center;
 }
 
-/* ---- HOME ---- */
+/* ---- HOME (base - overridden by path scene block below) ---- */
 #screen-home {
-  background: linear-gradient(160deg, #e6fffa 0%, #ebf8ff 55%, #faf5ff 100%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0;
-  overflow-y: auto;
+  /* overridden later */
 }
 
 .home-top {
@@ -253,6 +248,164 @@ html, body {
   border: 2px solid var(--w2);
 }
 .color-dot:active { transform: scale(0.88); }
+
+/* ============================================
+   HOME PATH SCENE
+   ============================================ */
+#screen-home {
+  background: linear-gradient(160deg, #e6fffa 0%, #ebf8ff 50%, #faf5ff 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+.home-path-scene {
+  flex: 1;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  min-height: 260px;
+}
+
+.path-grid {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 8px 12px;
+  box-sizing: border-box;
+  gap: 0;
+  justify-content: space-between;
+}
+
+.path-row {
+  display: flex;
+  gap: 4px;
+  position: relative;
+  flex: 1;
+}
+.path-row.reverse { flex-direction: row-reverse; }
+
+.path-tile {
+  flex: 1;
+  border-radius: 12px;
+  background: var(--tile-bg);
+  border-bottom: 4px solid var(--tile-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.12s;
+  min-height: 0;
+}
+.path-tile.tile-locked {
+  opacity: 0.42;
+  cursor: default;
+  filter: grayscale(0.4);
+}
+.path-tile.unlocked:active { transform: scale(0.93); }
+
+/* Subtle texture overlay per world via ::after */
+.path-tile::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  pointer-events: none;
+}
+.path-tile[data-world="1"]::after { background: repeating-linear-gradient(0deg, transparent 0, transparent 6px, rgba(255,255,255,0.18) 6px, rgba(255,255,255,0.18) 7px); }
+.path-tile[data-world="2"]::after { background: repeating-linear-gradient(45deg, transparent 0, transparent 5px, rgba(255,255,255,0.12) 5px, rgba(255,255,255,0.12) 6px); }
+.path-tile[data-world="3"]::after { background: repeating-linear-gradient(135deg, transparent 0, transparent 6px, rgba(255,255,255,0.15) 6px, rgba(255,255,255,0.15) 8px); }
+.path-tile[data-world="6"]::after { background: repeating-linear-gradient(0deg, transparent 0, transparent 4px, rgba(255,255,255,0.2) 4px, rgba(255,255,255,0.2) 5px); }
+.path-tile[data-world="7"]::after { background: radial-gradient(circle, rgba(255,255,255,0.55) 1px, transparent 1px) 0 0 / 9px 9px; }
+
+.path-tile-icon {
+  font-size: 22px;
+  position: relative;
+  z-index: 1;
+  line-height: 1;
+}
+.path-tile-stars {
+  position: relative;
+  z-index: 1;
+  font-size: 10px;
+  letter-spacing: 0;
+  line-height: 1;
+}
+.path-ts-on  { color: #ecc94b; }
+.path-ts-off { color: rgba(0,0,0,0.18); }
+
+/* Bend connector between rows */
+.path-bend-h {
+  height: 14px;
+  flex-shrink: 0;
+  position: relative;
+}
+.path-bend-h.bend-right-h {
+  border-right: 5px solid rgba(0,0,0,0.1);
+  border-bottom: 5px solid rgba(0,0,0,0.1);
+  border-radius: 0 0 10px 0;
+  margin-right: 12px;
+}
+.path-bend-h.bend-left-h {
+  border-left: 5px solid rgba(0,0,0,0.1);
+  border-bottom: 5px solid rgba(0,0,0,0.1);
+  border-radius: 0 0 0 10px;
+  margin-left: 12px;
+}
+
+/* Walking heroes on path */
+.path-walker-outer {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 58px;
+  display: flex;
+  align-items: center;
+  z-index: 20;
+  pointer-events: none;
+}
+.path-walker .hero-svg { display: none !important; }
+.path-walker .hero-svg[data-dir-svg="1"] { display: block !important; width: 54px; height: 54px; }
+
+/* Individual wander animations */
+.path-walker-outer-0 { animation: wander-lr  10s ease-in-out infinite; }
+.path-walker-outer-1 { animation: wander-rl   8s ease-in-out infinite 1.8s; }
+.path-walker-outer-2 { animation: wander-rl  13s ease-in-out infinite 5s; }
+
+@keyframes wander-lr {
+  0%   { left: 4px;              transform: scaleX(1); }
+  43%  { left: calc(100% - 62px); transform: scaleX(1); }
+  46%  { left: calc(100% - 62px); transform: scaleX(-1); }
+  98%  { left: 4px;              transform: scaleX(-1); }
+  100% { left: 4px;              transform: scaleX(1); }
+}
+@keyframes wander-rl {
+  0%   { left: calc(100% - 62px); transform: scaleX(-1); }
+  43%  { left: 4px;               transform: scaleX(-1); }
+  46%  { left: 4px;               transform: scaleX(1); }
+  98%  { left: calc(100% - 62px); transform: scaleX(1); }
+  100% { left: calc(100% - 62px); transform: scaleX(-1); }
+}
+
+/* Bob on the inner walker */
+.path-walker { animation: path-bob 0.85s ease-in-out infinite; }
+.path-walker-outer-1 .path-walker { animation-delay: 0.28s; }
+.path-walker-outer-2 .path-walker { animation-delay: 0.56s; }
+@keyframes path-bob {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+/* Home actions */
+.home-actions-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
 
 /* World progression strip (home) */
 .world-strip {
