@@ -1,183 +1,301 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="mobile-web-app-capable" content="yes">
-  <title>Tiny Logic</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-
-  <!-- HOME SCREEN -->
-  <div id="screen-home" class="screen active">
-
-    <!-- Header -->
-    <div class="home-header">
-      <div class="home-header-top">
-        <div class="home-title-group">
-          <h1 class="home-title" data-i18n="app_name">Tiny Logic</h1>
-          <p class="home-tagline" data-i18n="home_subtitle">Learn logic by playing!</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>Tiny Logic</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- HOME SCREEN -->
+    <div id="screen-home" class="screen active">
+      <!-- Header -->
+      <div class="home-header">
+        <div class="home-header-top">
+          <div class="home-title-group">
+            <h1 class="home-title" data-i18n="app_name">Tiny Logic</h1>
+            <p class="home-tagline" data-i18n="home_subtitle">
+              Learn logic by playing!
+            </p>
+          </div>
+          <div class="lang-switcher" id="lang-switcher">
+            <button class="lang-btn active" data-lang="en">EN</button>
+            <button class="lang-btn" data-lang="fr">FR</button>
+            <button class="lang-btn" data-lang="es">ES</button>
+          </div>
         </div>
-        <div class="lang-switcher" id="lang-switcher">
-          <button class="lang-btn active" data-lang="en">EN</button>
-          <button class="lang-btn" data-lang="fr">FR</button>
-          <button class="lang-btn" data-lang="es">ES</button>
+      </div>
+
+      <section class="home-worlds-section">
+        <div class="home-worlds-strip" id="home-worlds-strip"></div>
+      </section>
+
+      <!-- Action buttons -->
+      <div class="home-buttons">
+        <button class="btn btn-play" id="btn-start">
+          &#9654; <span data-i18n="btn_play">Play</span>
+        </button>
+        <button
+          class="btn btn-secondary"
+          id="btn-continue"
+          style="display: none"
+        >
+          &#9658; <span data-i18n="btn_continue">Continue</span>
+        </button>
+        <button
+          class="btn-hero-change"
+          id="btn-hero-change"
+          style="display: none"
+        >
+          &#x1F504; <span data-i18n="btn_change_hero">Change hero</span>
+        </button>
+        <button
+          class="btn-reset-progress"
+          id="btn-reset-progress"
+          style="display: none"
+        >
+          &#x1F5D1; <span data-i18n="btn_reset_progress">Reset progress</span>
+        </button>
+      </div>
+
+      <!-- RESET CONFIRM MODAL -->
+      <div id="modal-reset" class="modal" style="display: none">
+        <div class="modal-content">
+          <div class="fail-icon">&#9888;</div>
+          <h2
+            class="fail-title"
+            style="color: var(--text)"
+            data-i18n="reset_title"
+          >
+            Reset everything?
+          </h2>
+          <p class="fail-msg" data-i18n="reset_msg">
+            All your progress will be lost. Sure?
+          </p>
+          <div class="victory-buttons">
+            <button
+              class="btn btn-secondary"
+              id="btn-reset-cancel"
+              data-i18n="btn_no"
+            >
+              No
+            </button>
+            <button
+              class="btn btn-play"
+              id="btn-reset-confirm"
+              style="background: #e53e3e; box-shadow: 0 4px 0 #c53030"
+              data-i18n="btn_yes"
+            >
+              Yes
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Worlds strip (filled by JS) -->
-    <div class="home-worlds-strip" id="home-worlds-strip"></div>
-
-    <!-- Action buttons -->
-    <div class="home-buttons">
-      <button class="btn btn-play" id="btn-start">&#9654; <span data-i18n="btn_play">Play</span></button>
-      <button class="btn btn-secondary" id="btn-continue" style="display:none;">&#9658; <span data-i18n="btn_continue">Continue</span></button>
-      <button class="btn-hero-change" id="btn-hero-change" style="display:none;">&#x1F504; <span data-i18n="btn_change_hero">Change hero</span></button>
-      <button class="btn-reset-progress" id="btn-reset-progress" style="display:none;">&#x1F5D1; <span data-i18n="btn_reset_progress">Reset progress</span></button>
+    <!-- HERO SELECT SCREEN -->
+    <div id="screen-hero" class="screen">
+      <div class="hero-select-container">
+        <h2 class="hero-select-title" data-i18n="hero_select_title">
+          Choose your hero!
+        </h2>
+        <p class="hero-select-sub" data-i18n="hero_select_sub">
+          Who will join you on the adventure?
+        </p>
+        <div class="hero-cards" id="hero-cards"></div>
+        <div class="hero-colors-section" id="hero-colors-section">
+          <p class="hero-colors-label" data-i18n="hero_colors_label">
+            Customize colors:
+          </p>
+          <div class="hero-color-swatches" id="hero-color-swatches"></div>
+        </div>
+        <button
+          class="btn btn-play hero-confirm-btn"
+          id="btn-hero-confirm"
+          data-i18n="btn_hero_confirm"
+        >
+          Let's go!
+        </button>
+      </div>
     </div>
 
-    <div class="home-footer">Tiny Logic &copy; 2025</div>
+    <!-- WORLD SELECT SCREEN -->
+    <div id="screen-worlds" class="screen">
+      <div class="screen-header">
+        <button class="btn-back" id="btn-worlds-back" aria-label="Back">
+          &#9664;
+        </button>
+        <h2 class="screen-title" data-i18n="worlds_title">Worlds</h2>
+        <div class="spacer"></div>
+      </div>
+      <div class="worlds-grid" id="worlds-grid"></div>
+    </div>
 
-    <!-- RESET CONFIRM MODAL -->
-    <div id="modal-reset" class="modal" style="display:none;">
-      <div class="modal-content">
-        <div class="fail-icon">&#9888;</div>
-        <h2 class="fail-title" style="color:var(--text);" data-i18n="reset_title">Reset everything?</h2>
-        <p class="fail-msg" data-i18n="reset_msg">All your progress will be lost. Sure?</p>
+    <!-- LEVEL SELECT SCREEN -->
+    <div id="screen-levels" class="screen">
+      <div class="screen-header">
+        <button class="btn-back" id="btn-levels-back" aria-label="Back">
+          &#9664;
+        </button>
+        <h2 class="screen-title" id="levels-title">World 1</h2>
+        <div class="spacer"></div>
+      </div>
+      <div class="levels-grid" id="levels-grid"></div>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="screen-game" class="screen">
+      <div class="game-header">
+        <button class="btn-back" id="btn-game-back" aria-label="Back">
+          &#9664;
+        </button>
+        <div class="game-level-info">
+          <span id="game-world-name"></span>
+          <span id="game-level-num"></span>
+        </div>
+        <div class="game-stars-display" id="game-stars-display"></div>
+      </div>
+
+      <div class="game-area" id="game-area">
+        <div class="grid-container" id="grid-container"></div>
+        <div class="hero" id="hero"></div>
+      </div>
+
+      <div class="game-hint" id="game-hint" style="display: none"></div>
+
+      <div class="program-area" id="program-area">
+        <div class="program-label" data-i18n="program_label">My program:</div>
+        <div class="program-slots" id="program-slots">
+          <div class="program-empty" data-i18n="program_empty">
+            Add instructions!
+          </div>
+        </div>
+      </div>
+
+      <div class="function-area" id="function-area" style="display: none">
+        <div class="function-tabs">
+          <button
+            class="func-tab active"
+            data-func="main"
+            id="tab-main"
+            data-i18n="tab_main"
+          >
+            Main
+          </button>
+          <button class="func-tab" data-func="f1" id="tab-f1">F1</button>
+          <button
+            class="func-tab"
+            data-func="f2"
+            id="tab-f2"
+            style="display: none"
+          >
+            F2
+          </button>
+        </div>
+      </div>
+
+      <div class="loop-config" id="loop-config" style="display: none">
+        <div class="loop-config-inner">
+          <span class="loop-label" data-i18n="loop_label">How many times?</span>
+          <div class="loop-buttons">
+            <button class="loop-btn" data-count="2">2</button>
+            <button class="loop-btn" data-count="3">3</button>
+            <button class="loop-btn" data-count="4">4</button>
+            <button class="loop-btn" data-count="5">5</button>
+            <button class="loop-btn" data-count="6">6</button>
+          </div>
+          <button class="btn btn-small" id="loop-cancel" data-i18n="btn_cancel">
+            Cancel
+          </button>
+        </div>
+      </div>
+
+      <div class="palette" id="palette"></div>
+
+      <div class="controls">
+        <button class="btn btn-control btn-run" id="btn-run" aria-label="Run">
+          <span class="control-icon">&#9654;</span>
+        </button>
+        <button
+          class="btn btn-control btn-stop"
+          id="btn-stop"
+          aria-label="Stop"
+          style="display: none"
+        >
+          <span class="control-icon">&#9632;</span>
+        </button>
+        <button
+          class="btn btn-control btn-reset"
+          id="btn-reset"
+          aria-label="Reset"
+        >
+          <span class="control-icon">&#8634;</span>
+        </button>
+        <button
+          class="btn btn-control btn-clear"
+          id="btn-clear"
+          aria-label="Clear"
+        >
+          <span class="control-icon">&#10005;</span>
+        </button>
+        <button
+          class="btn btn-control btn-speed"
+          id="btn-speed"
+          aria-label="Speed"
+        >
+          <span class="control-icon" id="speed-icon">1x</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- VICTORY MODAL -->
+    <div id="modal-victory" class="modal" style="display: none">
+      <div class="modal-content victory-content">
+        <div class="victory-stars" id="victory-stars"></div>
+        <h2 class="victory-title" id="victory-title">Great!</h2>
+        <p class="victory-msg" id="victory-msg"></p>
         <div class="victory-buttons">
-          <button class="btn btn-secondary" id="btn-reset-cancel" data-i18n="btn_no">No</button>
-          <button class="btn btn-play" id="btn-reset-confirm" style="background:#e53e3e;box-shadow:0 4px 0 #c53030;" data-i18n="btn_yes">Yes</button>
+          <button
+            class="btn btn-secondary"
+            id="btn-replay"
+            data-i18n="btn_replay"
+          >
+            Replay
+          </button>
+          <button class="btn btn-play" id="btn-next" data-i18n="btn_next">
+            Next &#9654;
+          </button>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- HERO SELECT SCREEN -->
-  <div id="screen-hero" class="screen">
-    <div class="hero-select-container">
-      <h2 class="hero-select-title" data-i18n="hero_select_title">Choose your hero!</h2>
-      <p class="hero-select-sub" data-i18n="hero_select_sub">Who will join you on the adventure?</p>
-      <div class="hero-cards" id="hero-cards"></div>
-      <div class="hero-colors-section" id="hero-colors-section">
-        <p class="hero-colors-label" data-i18n="hero_colors_label">Customize colors:</p>
-        <div class="hero-color-swatches" id="hero-color-swatches"></div>
-      </div>
-      <button class="btn btn-play hero-confirm-btn" id="btn-hero-confirm" data-i18n="btn_hero_confirm">Let's go!</button>
-    </div>
-  </div>
-
-  <!-- WORLD SELECT SCREEN -->
-  <div id="screen-worlds" class="screen">
-    <div class="screen-header">
-      <button class="btn-back" id="btn-worlds-back" aria-label="Back">&#9664;</button>
-      <h2 class="screen-title" data-i18n="worlds_title">Worlds</h2>
-      <div class="spacer"></div>
-    </div>
-    <div class="worlds-grid" id="worlds-grid"></div>
-  </div>
-
-  <!-- LEVEL SELECT SCREEN -->
-  <div id="screen-levels" class="screen">
-    <div class="screen-header">
-      <button class="btn-back" id="btn-levels-back" aria-label="Back">&#9664;</button>
-      <h2 class="screen-title" id="levels-title">World 1</h2>
-      <div class="spacer"></div>
-    </div>
-    <div class="levels-grid" id="levels-grid"></div>
-  </div>
-
-  <!-- GAME SCREEN -->
-  <div id="screen-game" class="screen">
-    <div class="game-header">
-      <button class="btn-back" id="btn-game-back" aria-label="Back">&#9664;</button>
-      <div class="game-level-info">
-        <span id="game-world-name"></span>
-        <span id="game-level-num"></span>
-      </div>
-      <div class="game-stars-display" id="game-stars-display"></div>
-    </div>
-
-    <div class="game-area" id="game-area">
-      <div class="grid-container" id="grid-container"></div>
-      <div class="hero" id="hero"></div>
-    </div>
-
-    <div class="game-hint" id="game-hint" style="display:none;"></div>
-
-    <div class="program-area" id="program-area">
-      <div class="program-label" data-i18n="program_label">My program:</div>
-      <div class="program-slots" id="program-slots">
-        <div class="program-empty" data-i18n="program_empty">Add instructions!</div>
-      </div>
-    </div>
-
-    <div class="function-area" id="function-area" style="display:none;">
-      <div class="function-tabs">
-        <button class="func-tab active" data-func="main" id="tab-main" data-i18n="tab_main">Main</button>
-        <button class="func-tab" data-func="f1" id="tab-f1">F1</button>
-        <button class="func-tab" data-func="f2" id="tab-f2" style="display:none;">F2</button>
-      </div>
-    </div>
-
-    <div class="loop-config" id="loop-config" style="display:none;">
-      <div class="loop-config-inner">
-        <span class="loop-label" data-i18n="loop_label">How many times?</span>
-        <div class="loop-buttons">
-          <button class="loop-btn" data-count="2">2</button>
-          <button class="loop-btn" data-count="3">3</button>
-          <button class="loop-btn" data-count="4">4</button>
-          <button class="loop-btn" data-count="5">5</button>
-          <button class="loop-btn" data-count="6">6</button>
+    <!-- FAIL MODAL -->
+    <div id="modal-fail" class="modal" style="display: none">
+      <div class="modal-content fail-content">
+        <div class="fail-icon">&#128533;</div>
+        <h2 class="fail-title" id="fail-title" data-i18n="fail_title">Oops!</h2>
+        <p class="fail-msg" id="fail-msg" data-i18n="fail_msg_default">
+          Your hero didn't reach the treasure.
+        </p>
+        <div class="victory-buttons">
+          <button class="btn btn-play" id="btn-retry" data-i18n="btn_retry">
+            Retry
+          </button>
         </div>
-        <button class="btn btn-small" id="loop-cancel" data-i18n="btn_cancel">Cancel</button>
       </div>
     </div>
 
-    <div class="palette" id="palette"></div>
-
-    <div class="controls">
-      <button class="btn btn-control btn-run" id="btn-run" aria-label="Run"><span class="control-icon">&#9654;</span></button>
-      <button class="btn btn-control btn-stop" id="btn-stop" aria-label="Stop" style="display:none;"><span class="control-icon">&#9632;</span></button>
-      <button class="btn btn-control btn-reset" id="btn-reset" aria-label="Reset"><span class="control-icon">&#8634;</span></button>
-      <button class="btn btn-control btn-clear" id="btn-clear" aria-label="Clear"><span class="control-icon">&#10005;</span></button>
-      <button class="btn btn-control btn-speed" id="btn-speed" aria-label="Speed"><span class="control-icon" id="speed-icon">1x</span></button>
-    </div>
-  </div>
-
-  <!-- VICTORY MODAL -->
-  <div id="modal-victory" class="modal" style="display:none;">
-    <div class="modal-content victory-content">
-      <div class="victory-stars" id="victory-stars"></div>
-      <h2 class="victory-title" id="victory-title">Great!</h2>
-      <p class="victory-msg" id="victory-msg"></p>
-      <div class="victory-buttons">
-        <button class="btn btn-secondary" id="btn-replay" data-i18n="btn_replay">Replay</button>
-        <button class="btn btn-play" id="btn-next" data-i18n="btn_next">Next &#9654;</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- FAIL MODAL -->
-  <div id="modal-fail" class="modal" style="display:none;">
-    <div class="modal-content fail-content">
-      <div class="fail-icon">&#128533;</div>
-      <h2 class="fail-title" id="fail-title" data-i18n="fail_title">Oops!</h2>
-      <p class="fail-msg" id="fail-msg" data-i18n="fail_msg_default">Your hero didn't reach the treasure.</p>
-      <div class="victory-buttons">
-        <button class="btn btn-play" id="btn-retry" data-i18n="btn_retry">Retry</button>
-      </div>
-    </div>
-  </div>
-
-  <script src="js/i18n.js"></script>
-  <script src="js/sprites.js"></script>
-  <script src="js/sounds.js"></script>
-  <script src="js/levels.js"></script>
-  <script src="js/game.js"></script>
-  <script src="js/ui.js"></script>
-  <script src="js/app.js"></script>
-</body>
+    <script src="js/i18n.js"></script>
+    <script src="js/sprites.js"></script>
+    <script src="js/sounds.js"></script>
+    <script src="js/levels.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+  </body>
 </html>

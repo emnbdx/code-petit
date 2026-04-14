@@ -167,6 +167,19 @@ html, body {
   margin: 1px 0 0;
 }
 
+.home-worlds-section {
+  width: 100%;
+  padding: 8px 0 6px;
+}
+
+.home-worlds-title {
+  margin: 0;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 800;
+  color: rgba(45, 55, 72, 0.75);
+}
+
 /* ---- Horizontal sinuous worlds strip ---- */
 .home-worlds-strip {
   width: 100%;
@@ -175,8 +188,10 @@ html, body {
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: x proximity;
-  padding: 16px 0 12px;
+  padding: 10px 0 10px;
   position: relative;
+  display: flex;
+  justify-content: center;
 }
 .home-worlds-strip::-webkit-scrollbar { display: none; }
 /* Right fade — hints at more content to scroll */
@@ -193,6 +208,7 @@ html, body {
   position: relative;
   display: flex;
   /* width + height set by JS */
+  margin: 0 auto;
 }
 
 .worlds-path-svg {

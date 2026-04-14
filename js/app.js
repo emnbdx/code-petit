@@ -228,7 +228,7 @@ const App = (() => {
     // Heroes: top-left, bottom-mid, top-right (absolute over row)
     [
       { xIdx: 1.5, y: Y_TOP - 10, anim: 'anim-float',       defIdx: 0 },
-      { xIdx: 3.5, y: Y_BOT + 10, anim: 'anim-bounce-slow', defIdx: 1 },
+      { xIdx: 4.1, y: Y_BOT + 10, anim: 'anim-bounce-slow', defIdx: 1 },
       { xIdx: 5.5, y: Y_TOP - 10, anim: 'anim-wiggle',      defIdx: 2 },
     ].forEach(({ xIdx, y, anim, defIdx }) => {
       const def    = Sprites.HERO_DEFS[defIdx];
