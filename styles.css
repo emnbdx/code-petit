@@ -254,8 +254,6 @@ html, body {
    ============================================ */
 #screen-home {
   background: linear-gradient(160deg, #e6fffa 0%, #ebf8ff 50%, #faf5ff 100%);
-  display: flex;
-  flex-direction: column;
   align-items: center;
   overflow: hidden;
 }
