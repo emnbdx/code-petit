@@ -127,10 +127,10 @@ html, body {
 }
 
 /* ============================================
-   HOME — proto-inspired redesign
+   HOME
    ============================================ */
 #screen-home {
-  background: #fdf8ee;
+  background: linear-gradient(160deg, #e6fffa 0%, #ebf8ff 55%, #faf5ff 100%);
   align-items: center;
   overflow-y: auto;
   overflow-x: hidden;
@@ -139,12 +139,11 @@ html, body {
 /* ---- Header ---- */
 .home-header {
   width: 100%;
-  padding: 28px 20px 8px;
+  padding: 20px 20px 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  position: relative;
+  gap: 0;
 }
 .home-header-top {
   width: 100%;
@@ -153,182 +152,106 @@ html, body {
   justify-content: space-between;
 }
 .home-title {
-  font-size: 44px;
-  font-weight: 800;
-  color: hsl(25, 95%, 55%);
-  text-shadow: 0 3px 0 hsl(25, 95%, 35%), 0 6px 14px rgba(0,0,0,0.14);
-  line-height: 1;
+  font-size: 32px;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--w2) 0%, var(--w7) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin: 0;
-  letter-spacing: -1px;
+  line-height: 1.1;
 }
 .home-tagline {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-light);
-  margin: 0;
+  margin: 2px 0 0;
+  text-align: center;
 }
 
-/* ---- Hero showcase ---- */
-.home-heroes {
+/* ---- Horizontal worlds strip ---- */
+.home-worlds-strip {
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 16px;
-  padding: 12px 20px 4px;
+  align-items: center;
+  overflow-x: auto;
+  overflow-y: visible;
   width: 100%;
+  padding: 16px 20px 8px;
+  gap: 0;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
 }
-.home-hero-slot {
+.home-worlds-strip::-webkit-scrollbar { display: none; }
+
+.home-world-node {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
+  flex-shrink: 0;
+  min-width: 72px;
 }
-.home-hero-preview {
-  width: 72px;
-  height: 72px;
-  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.18));
+.home-world-connector {
+  width: 14px;
+  height: 3px;
+  flex-shrink: 0;
+  background: repeating-linear-gradient(90deg, rgba(0,0,0,0.12) 0, rgba(0,0,0,0.12) 3px, transparent 3px, transparent 6px);
+  border-radius: 2px;
+  align-self: center;
+  margin-bottom: 22px;
 }
-.home-hero-preview.hero-lg {
-  width: 80px;
-  height: 80px;
+.home-world-circle {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  border: 3px solid white;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.45);
+  transition: transform 0.15s;
 }
-.home-hero-preview .hero-svg { display: none; }
-.home-hero-preview .hero-svg[data-dir-svg="2"] { display: block; width: 100%; height: 100%; }
-.home-hero-name {
-  font-size: 12px;
+.home-world-node.current .home-world-circle {
+  box-shadow: 0 0 0 3px white, 0 0 0 5px var(--node-color), 0 4px 12px rgba(0,0,0,0.2);
+  animation: world-pulse 1.8s ease-in-out infinite;
+}
+@keyframes world-pulse {
+  0%,100% { transform: scale(1); }
+  50%      { transform: scale(1.07); }
+}
+.home-world-node.locked .home-world-circle {
+  filter: grayscale(0.6);
+  opacity: 0.5;
+}
+.home-world-label {
+  font-size: 10px;
   font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  max-width: 66px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.home-world-node.locked .home-world-label { opacity: 0.4; }
+.home-world-progress {
+  font-size: 10px;
   color: var(--text-light);
 }
 
-/* Hero animations */
-.anim-float       { animation: h-float      3s   ease-in-out infinite; }
-.anim-bounce-slow { animation: h-bounce     2s   ease-in-out infinite 0.3s; }
-.anim-wiggle      { animation: h-wiggle     2s   ease-in-out infinite 0.6s; }
-@keyframes h-float  { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-@keyframes h-bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
-@keyframes h-wiggle { 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(-5deg)} 75%{transform:rotate(5deg)} }
-
-/* ---- Game buttons ---- */
+/* ---- Home buttons ---- */
 .home-buttons {
   width: 100%;
   max-width: 320px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 10px;
-  padding: 12px 20px 8px;
+  padding: 8px 20px 16px;
 }
-.game-btn {
-  font-family: inherit;
-  font-weight: 700;
-  font-size: 18px;
-  border-radius: 20px;
-  padding: 14px 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  border: none;
-  border-bottom: 4px solid transparent;
-  cursor: pointer;
+.home-buttons .btn {
   width: 100%;
-  transition: filter 0.1s, transform 0.1s, border-bottom-width 0.1s;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.13);
-}
-.game-btn:active {
-  transform: translateY(2px);
-  border-bottom-width: 2px;
-  filter: brightness(0.95);
-}
-.game-btn.btn-play     { background: hsl(25,95%,55%); color:#fff; border-bottom-color: hsl(25,95%,35%); }
-.game-btn.btn-continue { background: hsl(200,85%,55%); color:#fff; border-bottom-color: hsl(200,85%,38%); }
-.game-btn.btn-sm       { font-size: 15px; padding: 10px 20px; }
-.game-btn.btn-hero     { background: hsl(145,60%,45%); color:#fff; border-bottom-color: hsl(145,60%,28%); }
-.game-btn.btn-danger   { background: hsl(0,75%,55%);   color:#fff; border-bottom-color: hsl(0,75%,38%); }
-
-/* ---- World map ---- */
-.world-map-section {
-  width: 100%;
-  padding: 8px 0 24px;
-}
-.world-map-title {
-  text-align: center;
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--text-light);
-  margin: 0 0 4px;
-}
-.world-map-container {
-  position: relative;
-  width: 100%;
-  max-width: 320px;
-  margin: 0 auto;
-  min-height: 640px;
-}
-.world-map-svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-.world-map-nodes {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 20px 8px;
-}
-.world-map-node-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.world-map-node-row.left  { justify-content: flex-start; padding-left: 8px; }
-.world-map-node-row.right { justify-content: flex-end;   padding-right: 8px; }
-.world-map-node-circle {
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 26px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.4);
-  border: 2px solid rgba(255,255,255,0.55);
-  flex-shrink: 0;
-}
-.world-map-node-circle.locked {
-  filter: grayscale(0.65);
-  opacity: 0.45;
-}
-.world-map-node-name {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text);
-}
-.world-map-node-name.locked { opacity: 0.4; }
-
-/* Floating heroes on the map */
-.map-hero-float {
-  position: absolute;
-  pointer-events: none;
-}
-.map-hero-float .hero-svg { display: none; }
-.map-hero-float .hero-svg[data-dir-svg="2"] {
-  display: block;
-  width: 52px;
-  height: 52px;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.22));
-}
-.map-hero-float.anim-float       { animation: h-float  3s ease-in-out infinite; }
-.map-hero-float.anim-bounce-slow { animation: h-bounce 2s ease-in-out infinite 0.5s; }
-.map-hero-float.anim-wiggle      { animation: h-wiggle 2s ease-in-out infinite 1s; }
-
-/* Home footer */
-.home-footer {
-  padding: 12px 16px 20px;
-  text-align: center;
-  font-size: 12px;
-  color: var(--text-light);
 }
 
 /* ---- LEGACY — kept for hero select screen ---- */

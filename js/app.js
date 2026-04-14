@@ -159,101 +159,52 @@ const App = (() => {
 
   // ---- Home Screen ----
   function buildHomeScreen() {
-    buildHeroShowcase();
-    buildWorldMap();
+    buildWorldsStrip();
   }
 
-  function buildHeroShowcase() {
-    const el = document.getElementById('home-heroes');
-    el.innerHTML = '';
-
-    const anims   = ['anim-float', 'anim-bounce-slow', 'anim-wiggle'];
-    const isLarge = [false, true, false];
-
-    Sprites.HERO_DEFS.forEach((def, idx) => {
-      const preset  = (def.id === heroSelectId) ? heroSelectPreset : 0;
-      const slot    = document.createElement('div');
-      slot.className = 'home-hero-slot';
-
-      const preview = document.createElement('div');
-      preview.className = 'home-hero-preview ' + anims[idx] + (isLarge[idx] ? ' hero-lg' : '');
-      preview.innerHTML = Sprites.getPreviewSVG(def.id, preset);
-
-      const name = document.createElement('span');
-      name.className   = 'home-hero-name';
-      name.textContent = def.name;
-
-      slot.appendChild(preview);
-      slot.appendChild(name);
-      el.appendChild(slot);
-    });
-  }
-
-  function buildWorldMap() {
-    const container = document.getElementById('world-map-container');
-    container.innerHTML = '';
-
-    // Dashed S-curve SVG background path
-    const svgNS = 'http://www.w3.org/2000/svg';
-    const svg   = document.createElementNS(svgNS, 'svg');
-    svg.setAttribute('viewBox', '0 0 300 700');
-    svg.setAttribute('class',   'world-map-svg');
-    svg.setAttribute('fill',    'none');
-
-    const path = document.createElementNS(svgNS, 'path');
-    path.setAttribute('d', 'M150 50 C80 100,220 150,150 200 C80 250,220 300,150 350 C80 400,220 450,150 500 C80 550,220 600,150 650');
-    path.setAttribute('stroke', 'rgba(0,0,0,0.1)');
-    path.setAttribute('stroke-width', '8');
-    path.setAttribute('stroke-linecap', 'round');
-    path.setAttribute('stroke-dasharray', '12 8');
-    svg.appendChild(path);
-    container.appendChild(svg);
-
-    // World nodes alternating left / right
-    const nodesDiv = document.createElement('div');
-    nodesDiv.className = 'world-map-nodes';
+  function buildWorldsStrip() {
+    const strip = document.getElementById('home-worlds-strip');
+    strip.innerHTML = '';
 
     WORLDS.forEach((world, idx) => {
       const unlocked = isWorldUnlocked(world.id);
-      const isLeft   = idx % 2 === 0;
+      const progress = getWorldProgress(world.id);
+      const isCurrent = save.lastWorld === world.id;
 
-      const row = document.createElement('div');
-      row.className = 'world-map-node-row ' + (isLeft ? 'left' : 'right');
+      // Node
+      const node = document.createElement('div');
+      node.className = 'home-world-node' + (isCurrent ? ' current' : '') + (unlocked ? '' : ' locked');
+      node.style.setProperty('--node-color', `var(--w${world.id})`);
 
       const circle = document.createElement('div');
-      circle.className  = 'world-map-node-circle' + (unlocked ? '' : ' locked');
+      circle.className = 'home-world-circle';
       circle.style.background = `var(--w${world.id})`;
-      circle.textContent = world.icon;
+      circle.textContent = unlocked ? world.icon : '🔒';
 
-      const name = document.createElement('span');
-      name.className   = 'world-map-node-name' + (unlocked ? '' : ' locked');
-      name.textContent = I18n.t(world.nameKey);
+      const label = document.createElement('div');
+      label.className = 'home-world-label';
+      label.textContent = I18n.t(world.nameKey);
 
-      if (isLeft) { row.appendChild(circle); row.appendChild(name); }
-      else        { row.appendChild(name);   row.appendChild(circle); }
+      if (unlocked) {
+        const prog = document.createElement('div');
+        prog.className = 'home-world-progress';
+        prog.textContent = progress.completed + '/20';
+        node.appendChild(circle);
+        node.appendChild(label);
+        node.appendChild(prog);
+      } else {
+        node.appendChild(circle);
+        node.appendChild(label);
+      }
 
-      nodesDiv.appendChild(row);
-    });
+      strip.appendChild(node);
 
-    container.appendChild(nodesDiv);
-
-    // 3 heroes floating on the map
-    const positions = [
-      { style: 'top:12px; left:calc(50% - 26px);', anim: 'anim-float' },
-      { style: 'top:240px; right:12px;',            anim: 'anim-bounce-slow' },
-      { style: 'bottom:100px; left:12px;',           anim: 'anim-wiggle' },
-    ];
-
-    Sprites.HERO_DEFS.forEach((def, idx) => {
-      const pos    = positions[idx];
-      const preset = (def.id === heroSelectId) ? heroSelectPreset : 0;
-
-      const heroEl = document.createElement('div');
-      heroEl.className  = 'map-hero-float ' + pos.anim;
-      heroEl.style.cssText = pos.style;
-      heroEl.innerHTML  = Sprites.getPreviewSVG(def.id, preset);
-
-      container.appendChild(heroEl);
+      // Connector between nodes (not after the last one)
+      if (idx < WORLDS.length - 1) {
+        const connector = document.createElement('div');
+        connector.className = 'home-world-connector';
+        strip.appendChild(connector);
+      }
     });
   }
 
