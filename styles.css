@@ -1942,6 +1942,17 @@ html, body {
   }
 }
 
+/* Mobile phones — wrap program slots instead of horizontal scroll */
+@media (max-width: 479px) {
+  .program-slots {
+    flex-wrap: wrap;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 120px;
+    align-content: flex-start;
+  }
+}
+
 /* Landscape */
 @media (orientation: landscape) and (max-height: 500px) {
   #screen-game {
