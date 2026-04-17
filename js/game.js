@@ -218,6 +218,14 @@ const Game = (() => {
     heroEl.classList.remove('walking');
     renderGrid();
     positionHero(false);
+
+    // Auto-collect star at starting position (same logic as loadLevel)
+    const startTile = state.grid[state.heroY][state.heroX];
+    if (startTile === '*') {
+      state.stars.push([state.heroX, state.heroY]);
+      state.collected++;
+      updateCell(state.heroX, state.heroY);
+    }
   }
 
   function isWalkable(x, y) {

@@ -127,130 +127,130 @@ const LEVELS = [
   // 3-2
   { grid: ['..','G.'], hero: [1,0,2], tools: ['forward','right'], optimal: 3, hint: 'hint_forward_right_fwd', type: 'guided' },
   // 3-3
-  { grid: ['..G','...','...'], hero: [0,2,0], tools: ['forward','right'], optimal: 4, type: 'normal' },
+  { grid: ['..G','...','...'], hero: [0,2,0], tools: ['forward','right'], optimal: 5, type: 'normal' },
   // 3-4
   { grid: ['...','...','.G.'], hero: [2,0,2], tools: ['forward','right'], optimal: 4, type: 'normal' },
   // 3-5
   { grid: ['...','..G','...'], hero: [0,0,1], tools: ['forward','right'], optimal: 4, type: 'normal' },
   // 3-6
-  { grid: ['...G','....','....','....'], hero: [0,3,0], tools: ['forward','right'], optimal: 6, type: 'normal' },
+  { grid: ['...G','....','....','....'], hero: [0,3,0], tools: ['forward','right'], optimal: 7, type: 'normal' },
   // 3-7
-  { grid: ['G...','....','....','....'], hero: [3,3,0], tools: ['forward','right'], optimal: 6, type: 'normal' },
+  { grid: ['G...','....','....','....'], hero: [3,3,0], tools: ['forward','right'], optimal: 9, type: 'normal' },
   // 3-8
-  { grid: ['...*','..G.','....'], hero: [0,2,0], tools: ['forward','right'], optimal: 5, type: 'collect' },
+  { grid: ['...*','..G.','....'], hero: [0,2,0], tools: ['forward','right'], optimal: 10, type: 'collect' },
   // 3-9
-  { grid: ['....','..G.','....','*...'], hero: [0,3,0], tools: ['forward','right'], optimal: 5, type: 'collect' },
+  { grid: ["....","..G.","*...","...."], hero: [0,3,0], tools: ['forward','right'], optimal: 5, type: 'collect' },
   // 3-10
-  { grid: ['....','.G..','....','....','....'], hero: [0,4,0], tools: ['forward','right'], optimal: 6, type: 'normal' },
+  { grid: ['....','.G..','....','....','....'], hero: [0,4,0], tools: ['forward','right'], optimal: 5, type: 'normal' },
   // 3-11 (introduce left turn)
   { grid: ['G.','..'], hero: [1,1,0], tools: ['forward','right','left'], optimal: 3, hint: 'hint_try_turn_left', type: 'guided' },
   // 3-12
-  { grid: ['G..','...','...'], hero: [2,2,3], tools: ['forward','right','left'], optimal: 4, type: 'normal' },
+  { grid: ['G..','...','...'], hero: [2,2,3], tools: ['forward','right','left'], optimal: 5, type: 'normal' },
   // 3-13
-  { grid: ['...','...','..G'], hero: [0,0,2], tools: ['forward','right','left'], optimal: 4, type: 'normal' },
+  { grid: ['...','...','..G'], hero: [0,0,2], tools: ['forward','right','left'], optimal: 5, type: 'normal' },
   // 3-14
-  { grid: ['G...','....','....'], hero: [3,2,3], tools: ['forward','right','left'], optimal: 5, type: 'normal' },
+  { grid: ['G...','....','....'], hero: [3,2,3], tools: ['forward','right','left'], optimal: 6, type: 'normal' },
   // 3-15
   { grid: ['.G..','....','....','....'], hero: [0,3,0], tools: ['forward','right','left'], optimal: 5, type: 'normal' },
   // 3-16
-  { grid: ['....','..*.','..G.','....'], hero: [0,3,0], tools: ['forward','right','left'], optimal: 6, type: 'collect' },
+  { grid: ['....','..*.','..G.','....'], hero: [0,3,0], tools: ['forward','right','left'], optimal: 7, type: 'collect' },
   // 3-17
-  { grid: ['*...','....','...G','....'], hero: [0,0,2], tools: ['forward','right','left'], optimal: 6, type: 'collect' },
+  { grid: ["....","*...","...G","...."], hero: [0,0,2], tools: ['forward','right','left'], optimal: 6, type: 'collect' },
   // 3-18
-  { grid: ['....','.*..','....','G...'], hero: [3,0,2], tools: ['forward','right','left'], optimal: 7, type: 'collect' },
+  { grid: ['....','.*..','....','G...'], hero: [3,0,2], tools: ['forward','right','left'], optimal: 8, type: 'collect' },
   // 3-19
-  { grid: ['G....','.....','*....','.....','.....'], hero: [4,4,3], tools: ['forward','right','left'], optimal: 8, type: 'challenge' },
+  { grid: ['G....','.....','*....','.....','.....'], hero: [4,4,3], tools: ['forward','right','left'], optimal: 9, type: 'challenge' },
   // 3-20
-  { grid: ['....*','.....','.....','.....','.G...'], hero: [0,0,2], tools: ['forward','right','left'], optimal: 8, type: 'challenge' },
+  { grid: ['....*','.....','.....','.....','.G...'], hero: [0,0,2], tools: ['forward','right','left'], optimal: 14, type: 'challenge' },
 
   // =============================================
   // WORLD 4 - LA MONTAGNE (obstacles / walls)
   // =============================================
   // 4-1
-  { grid: ['..G.','.#..','....'], hero: [0,2,0], tools: ['forward','left','right'], optimal: 4, hint: 'hint_go_around_wall', type: 'guided' },
+  { grid: ['..G.','.#..','....'], hero: [0,2,0], tools: ['forward','left','right'], optimal: 5, hint: 'hint_go_around_wall', type: 'guided' },
   // 4-2
   { grid: ['....','..#.','..G.'], hero: [0,0,2], tools: ['forward','left','right'], optimal: 5, type: 'normal' },
   // 4-3
-  { grid: ['G...','##..','....'], hero: [0,2,0], tools: ['forward','left','right'], optimal: 5, type: 'normal' },
+  { grid: ['G...','##..','....'], hero: [0,2,0], tools: ['forward','left','right'], optimal: 9, type: 'normal' },
   // 4-4
   { grid: ['.G..','....','.#..','....'], hero: [0,3,0], tools: ['forward','left','right'], optimal: 5, type: 'normal' },
   // 4-5
-  { grid: ['....','#.#.','..G.','....'], hero: [0,0,2], tools: ['forward','left','right'], optimal: 5, type: 'normal' },
+  { grid: ['....','#.#.','..G.','....'], hero: [0,0,2], tools: ['forward','left','right'], optimal: 7, type: 'normal' },
   // 4-6
   { grid: ['.G...','.#...','..#..','...#.','....#'], hero: [0,4,0], tools: ['forward','left','right'], optimal: 6, type: 'normal' },
   // 4-7
-  { grid: ['...G.','..#..','.....','..#..','.....'], hero: [0,4,0], tools: ['forward','left','right'], optimal: 7, type: 'normal' },
+  { grid: ['...G.','..#..','.....','..#..','.....'], hero: [0,4,0], tools: ['forward','left','right'], optimal: 8, type: 'normal' },
   // 4-8
-  { grid: ['.....','..##.','..G..','.....','..#..'], hero: [0,4,0], tools: ['forward','left','right'], optimal: 7, type: 'normal' },
+  { grid: ['.....','..##.','..G..','.....','..#..'], hero: [0,4,0], tools: ['forward','left','right'], optimal: 5, type: 'normal' },
   // 4-9
-  { grid: ['G....','###..','.....','.####','.....'], hero: [0,4,0], tools: ['forward','left','right'], optimal: 8, type: 'normal' },
+  { grid: ['G....','###..','.....','.####','.....'], hero: [0,4,0], tools: ['forward','left','right'], optimal: 13, type: 'normal' },
   // 4-10
-  { grid: ['.....','.###.','...G.','.#...','.....'], hero: [0,4,0], tools: ['forward','left','right'], optimal: 7, type: 'normal' },
+  { grid: ['.....','.###.','...G.','.#...','.....'], hero: [0,4,0], tools: ['forward','left','right'], optimal: 6, type: 'normal' },
   // 4-11
-  { grid: ['.....','#.##.','.....','.##.#','G....'], hero: [4,0,2], tools: ['forward','left','right'], optimal: 8, type: 'normal' },
+  { grid: ['.....','#.##.','.....','.##.#','G....'], hero: [4,0,2], tools: ['forward','left','right'], optimal: 10, type: 'normal' },
   // 4-12
-  { grid: ['....G','..##.','.....','.##..','.....'], hero: [0,4,0], tools: ['forward','left','right'], optimal: 8, type: 'normal' },
+  { grid: ['....G','..##.','.....','.##..','.....'], hero: [0,4,0], tools: ['forward','left','right'], optimal: 9, type: 'normal' },
   // 4-13
-  { grid: ['G.....','.####.','......','####..','......'], hero: [0,4,0], tools: ['forward','left','right'], optimal: 10, type: 'normal' },
+  { grid: ['G.....','.####.','......','####..','......'], hero: [0,4,0], tools: ['forward','left','right'], optimal: 16, type: 'normal' },
   // 4-14
   { grid: ['.....','..#..','G.#..','..#..','..#..','.....'], hero: [4,5,0], tools: ['forward','left','right'], optimal: 9, type: 'normal' },
   // 4-15
-  { grid: ['*..G.','.##..','.....','.##..','.....'], hero: [0,4,0], tools: ['forward','left','right'], optimal: 7, type: 'collect' },
+  { grid: ['*..G.','.##..','.....','.##..','.....'], hero: [0,4,0], tools: ['forward','left','right'], optimal: 8, type: 'collect' },
   // 4-16
   { grid: ['....G','.###.','*....','.###.','.....'], hero: [0,4,0], tools: ['forward','left','right'], optimal: 9, type: 'collect' },
   // 4-17
-  { grid: ['..*..','.#.#.','.....','.#.#.','G..*.'], hero: [4,0,2], tools: ['forward','left','right'], optimal: 10, type: 'collect' },
+  { grid: ['..*..','.#.#.','.....','.#.#.','G..*.'], hero: [4,0,2], tools: ['forward','left','right'], optimal: 15, type: 'collect' },
   // 4-18
-  { grid: ['*....','####.','..G..','####.','*....'], hero: [0,4,0], tools: ['forward','left','right'], optimal: 10, type: 'collect' },
+  { grid: ["...G.","..##.","*.*..","..##.","....."], hero: [0,4,0], tools: ['forward','left','right'], optimal: 12, type: 'collect' },
   // 4-19
-  { grid: ['G.....','######','......','######','......','......'], hero: [0,5,0], tools: ['forward','left','right'], optimal: 11, type: 'challenge' },
+  { grid: ["G.....","#####.","......",".#####","......","......"], hero: [0,5,0], tools: ['forward','left','right'], optimal: 18, type: 'challenge' },
   // 4-20
-  { grid: ['G.....','.####.','......','.####.','......','.####.','......'], hero: [5,6,3], tools: ['forward','left','right'], optimal: 13, type: 'challenge' },
+  { grid: ['G.....','.####.','......','.####.','......','.####.','......'], hero: [5,6,3], tools: ['forward','left','right'], optimal: 12, type: 'challenge' },
 
   // =============================================
   // WORLD 5 - LE DESERT (patterns / pre-loops)
   // Repetitive sequences: forward+right, zigzags, spirals
   // =============================================
   // 5-1: Staircase right 2 steps (fwd,fwd,right, fwd,fwd,right pattern)
-  { grid: ['..G','...','.#.','...'], hero: [0,3,0], tools: ['forward','left','right'], optimal: 5, hint: 'hint_repeat_pattern', type: 'guided' },
+  { grid: ['..G','...','.#.','...'], hero: [0,3,0], tools: ['forward','left','right'], optimal: 6, hint: 'hint_repeat_pattern', type: 'guided' },
   // 5-2: Staircase left
-  { grid: ['G..','...','.#.','...'], hero: [2,3,0], tools: ['forward','left','right'], optimal: 5, type: 'normal' },
+  { grid: ['G..','...','.#.','...'], hero: [2,3,0], tools: ['forward','left','right'], optimal: 6, type: 'normal' },
   // 5-3: 3-step staircase right
-  { grid: ['...G','#...','.#..','....'], hero: [0,3,0], tools: ['forward','left','right'], optimal: 7, type: 'normal' },
+  { grid: ['...G','#...','.#..','....'], hero: [0,3,0], tools: ['forward','left','right'], optimal: 8, type: 'normal' },
   // 5-4: Zigzag right-left
-  { grid: ['..G.','..#.','....','....'], hero: [0,3,0], tools: ['forward','left','right'], optimal: 7, type: 'normal' },
+  { grid: ['..G.','..#.','....','....'], hero: [0,3,0], tools: ['forward','left','right'], optimal: 6, type: 'normal' },
   // 5-5: Long staircase
-  { grid: ['.....','....G','....#','...#.','..#..','.....','.....'], hero: [0,6,0], tools: ['forward','left','right'], optimal: 9, type: 'normal' },
+  { grid: ['.....','....G','....#','...#.','..#..','.....','.....'], hero: [0,6,0], tools: ['forward','left','right'], optimal: 10, type: 'normal' },
   // 5-6: Zigzag down
   { grid: ['.....','.#.#.','.....','#.#..','....G'], hero: [0,0,1], tools: ['forward','left','right'], optimal: 9, type: 'normal' },
   // 5-7: S-curve
-  { grid: ['....','.##.','....','.##.','G...'], hero: [3,0,2], tools: ['forward','left','right'], optimal: 9, type: 'normal' },
+  { grid: ['....','.##.','....','.##.','G...'], hero: [3,0,2], tools: ['forward','left','right'], optimal: 8, type: 'normal' },
   // 5-8: Reverse S-curve
-  { grid: ['.....','.###.','.....','.###.','G....'], hero: [0,0,2], tools: ['forward','left','right'], optimal: 9, type: 'normal' },
+  { grid: ['.....','.###.','.....','.###.','G....'], hero: [0,0,2], tools: ['forward','left','right'], optimal: 4, type: 'normal' },
   // 5-9: Spiral small CW
-  { grid: ['G....','.###.','.....','.....','....#'], hero: [0,4,0], tools: ['forward','left','right'], optimal: 9, type: 'normal' },
+  { grid: ['G....','.###.','.....','.....','....#'], hero: [0,4,0], tools: ['forward','left','right'], optimal: 4, type: 'normal' },
   // 5-10: Box pattern
-  { grid: ['.G...','.#...','.....','...#.','.....'], hero: [0,4,0], tools: ['forward','left','right'], optimal: 9, type: 'normal' },
+  { grid: ['.G...','.#...','.....','...#.','.....'], hero: [0,4,0], tools: ['forward','left','right'], optimal: 6, type: 'normal' },
   // 5-11: Double zigzag with star
-  { grid: ['*....','####.','.....','.####','G....'], hero: [4,0,2], tools: ['forward','left','right'], optimal: 9, type: 'collect' },
+  { grid: ['*....','####.','.....','.####','G....'], hero: [4,0,2], tools: ['forward','left','right'], optimal: 22, type: 'collect' },
   // 5-12: Long S-curve
   { grid: ['......','.####.','......','......','.####.','G.....'], hero: [5,0,2], tools: ['forward','left','right'], optimal: 11, type: 'normal' },
   // 5-13: Triple zigzag
-  { grid: ['......','#####.','......','.#####','......','G.....'], hero: [5,0,2], tools: ['forward','left','right'], optimal: 11, type: 'normal' },
+  { grid: ['......','#####.','......','.#####','......','G.....'], hero: [5,0,2], tools: ['forward','left','right'], optimal: 12, type: 'normal' },
   // 5-14: Staircase with stars
   { grid: ['....G','*..#.','..#..','*#...','.....'], hero: [0,4,0], tools: ['forward','left','right'], optimal: 9, type: 'collect' },
   // 5-15: Spiral medium
   { grid: ['.....G','..###.','..#...','..#.#.','....#.','......'], hero: [0,5,0], tools: ['forward','left','right'], optimal: 11, type: 'normal' },
   // 5-16: Serpentine
-  { grid: ['.......','######.','.......','.######','G......'], hero: [6,0,2], tools: ['forward','left','right'], optimal: 13, type: 'normal' },
+  { grid: ['.......','######.','.......','.######','G......'], hero: [6,0,2], tools: ['forward','left','right'], optimal: 12, type: 'normal' },
   // 5-17: Long zigzag with stars
-  { grid: ['*......','######.','.......','.######','*......','######.','G......'], hero: [6,0,2], tools: ['forward','left','right'], optimal: 13, type: 'collect' },
+  { grid: ['*......','######.','.......','.######','*......','######.','G......'], hero: [6,0,2], tools: ['forward','left','right'], optimal: 45, type: 'collect' },
   // 5-18: Complex S-pattern
   { grid: ['........','.######.','........','........','.######.','........','........','G.......'], hero: [7,0,2], tools: ['forward','left','right'], optimal: 15, type: 'normal' },
   // 5-19: Full serpentine challenge
-  { grid: ['*......','######.','.......','.######','......*','######.','G......'], hero: [6,0,2], tools: ['forward','left','right'], optimal: 13, type: 'challenge' },
+  { grid: ['*......','######.','.......','.######','......*','######.','G......'], hero: [6,0,2], tools: ['forward','left','right'], optimal: 45, type: 'challenge' },
   // 5-20: Grand spiral
-  { grid: ['G.......','########','.......#','######.#','.....#.#','####.#.#','...#...#','...#####'], hero: [0,7,0], tools: ['forward','left','right'], optimal: 17, type: 'challenge' },
+  { grid: ["G.......","#######.","........",".#######","........","#######.","........","........"], hero: [0,7,0], tools: ['forward','left','right'], optimal: 42, type: 'challenge' },
 
   // =============================================
   // WORLD 6 - L'OCEAN (loops)
@@ -282,7 +282,7 @@ const LEVELS = [
   // 6-13: Square loop (fwd,right) x4
   { grid: ['G....','.###.','.#.#.','.#...','.....'], hero: [0,4,0], tools: ['forward','left','right','loop'], optimal: 3, type: 'normal' },
   // 6-14: Star collection with loop
-  { grid: ['*.*.*.*G'], hero: [0,0,1], tools: ['forward','left','right','loop'], optimal: 2, type: 'collect' },
+  { grid: [".*.*.*.*G"], hero: [0,0,1], tools: ['forward','left','right','loop'], optimal: 2, type: 'collect' },
   // 6-15: Zigzag stars
   { grid: ['*....','.###.','.....','.###.','G*...'], hero: [4,0,2], tools: ['forward','left','right','loop'], optimal: 5, type: 'collect' },
   // 6-16: Long corridor
@@ -317,7 +317,7 @@ const LEVELS = [
   // 7-8: F1 = right,fwd,left,fwd - zigzag
   { grid: ['.....','####.','.....','.####','G....'], hero: [4,0,2], tools: ['forward','left','right','loop','f1'], optimal: 6, type: 'normal' },
   // 7-9: F1 with stars
-  { grid: ['*.*.*G'], hero: [0,0,1], tools: ['forward','left','right','loop','f1'], optimal: 4, type: 'collect' },
+  { grid: [".*.*.*G"], hero: [0,0,1], tools: ['forward','left','right','loop','f1'], optimal: 4, type: 'collect' },
   // 7-10: F1 in loop for zigzag
   { grid: ['......','#####.','......','.#####','......','#####.','G.....'], hero: [5,0,2], tools: ['forward','left','right','loop','f1'], optimal: 6, type: 'normal' },
   // 7-11: F1 = fwd,right,fwd,right (square side)
@@ -335,7 +335,7 @@ const LEVELS = [
   // 7-17: F1 = pattern reuse x4
   { grid: ['........G','........#','.......#.','......#..','.....#...','....#....','...#.....','..#......','.........'], hero: [0,8,0], tools: ['forward','left','right','loop','f1'], optimal: 4, type: 'normal' },
   // 7-18: F1 collect all
-  { grid: ['*...*','####.','.....','.####','*...*','####.','G....'], hero: [4,0,2], tools: ['forward','left','right','loop','f1'], optimal: 6, type: 'collect' },
+  { grid: ["*....","####.",".....",".####","*...*","####.","G...."], hero: [4,0,2], tools: ['forward','left','right','loop','f1'], optimal: 6, type: 'collect' },
   // 7-19: F1 challenge maze
   { grid: ['G.......','########','........','.#######','........','########','........'], hero: [7,0,2], tools: ['forward','left','right','loop','f1'], optimal: 6, type: 'challenge' },
   // 7-20: F1 grand spiral challenge
@@ -353,7 +353,7 @@ const LEVELS = [
   // 8-4: F1+F2 staircase
   { grid: ['....G','...#.','..#..','.#...','.....'], hero: [0,4,0], tools: ['forward','left','right','loop','f1','f2'], optimal: 5, type: 'normal' },
   // 8-5: Stars with F1+F2
-  { grid: ['*....*','#####.','......','.#####','......','G*....'], hero: [5,0,2], tools: ['forward','left','right','loop','f1','f2'], optimal: 6, type: 'collect' },
+  { grid: ["*.....","#####.","......",".#####","......","G*...."], hero: [5,0,2], tools: ['forward','left','right','loop','f1','f2'], optimal: 6, type: 'collect' },
   // 8-6: F2 = new pattern
   { grid: ['G.......','.######.','........','........','.######.','........'], hero: [7,0,2], tools: ['forward','left','right','loop','f1','f2'], optimal: 6, type: 'normal' },
   // 8-7: Complex F1+F2 reuse
