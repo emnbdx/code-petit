@@ -151,7 +151,7 @@ const UI = (() => {
       return;
     }
 
-    if (prog.length >= 30) return; // Max program length
+    if (prog.length >= 50) return; // Max program length
 
     prog.push({ type: tool, id: uid() });
     setActiveProgram(prog);
@@ -160,7 +160,7 @@ const UI = (() => {
 
   function addLoopToProgram(count) {
     const prog = getActiveProgram();
-    if (prog.length >= 30) return;
+    if (prog.length >= 50) return;
 
     prog.push({
       type: 'loop',
